@@ -36,30 +36,44 @@ def fetch_file_details(target_directory_path, options)
   options[:r] ? file_details.reverse : file_details
 end
 
-def output(file_names)
-  return if file_names.empty?
+def output(file_details, options)
+  return if file_details.empty?
 
-  row_count = ((file_names.size - 1) / MAX_COL_COUNT) + 1
-  col_count = [file_names.size, MAX_COL_COUNT].min
-
-  # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
-  # NOTE: file_names_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されている
-  file_names_table = file_names.each_slice(row_count).to_a
-  widths = file_names_table.map { |col| col.map(&:size).max + SPACE_WIDTH }
-
-  row_count.times do |row_index|
-    col_count.times do |col_index|
-      # file_names_tableの行と列が逆で保存されているので、col_indexとrow_indexを入れ替えて出力させている
-      target_file_name = file_names_table[col_index][row_index]
-      print target_file_name&.ljust(widths[col_index])
+  if options[:l]
+    file_details.each do |file_detail|
+      print file_detail[:mode] # 要変換
+      print file_detail[:hardlink_count]
+      print file_detail[:owner_user] # 要変換
+      print file_detail[:owner_group] # 要変換
+      print file_detail[:size]
+      print file_detail[:ctime]
+      print file_detail[:name]
+      puts
     end
-    print "\n"
+
+  else
+    row_count = ((file_details.size - 1) / MAX_COL_COUNT) + 1
+    col_count = [file_details.size, MAX_COL_COUNT].min
+
+    # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
+    # NOTE: file_names_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されている
+    file_details_table = file_details.each_slice(row_count).to_a
+    widths = file_details_table.map { |col| col.map{|detail| detail[:name].size}.max + SPACE_WIDTH }
+
+    row_count.times do |row_index|
+      col_count.times do |col_index|
+        # file_names_tableの行と列が逆で保存されているので、col_indexとrow_indexを入れ替えて出力させている
+        target_file_detail = file_details_table[col_index][row_index]
+        print target_file_detail[:name].ljust(widths[col_index]) unless target_file_detail.nil? # 要修正
+      end
+      print "\n"
+    end
   end
+    
 end
 
 # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
 options, directory_paths = parse_options(ARGV)
 directory_path = directory_paths[0] || './'
-file_dtails = fetch_file_details(directory_path, options)
-puts file_dtails
-# output(file_names)
+file_details = fetch_file_details(directory_path, options)
+output(file_details, options)
