@@ -24,8 +24,12 @@ def fetch_file_details(target_directory_path, options)
   if options[:l]
     file_details.each do |file_detail|
       stat = File.stat("#{target_directory_path}/#{file_detail[:name]}")
-      file_detail[:ctime] = stat.ctime
+      file_detail[:mode] = stat.mode
+      file_detail[:hardlink_count] = stat.nlink
+      file_detail[:owner_user] = stat.uid
+      file_detail[:owner_group] = stat.gid
       file_detail[:size] = stat.size
+      file_detail[:ctime] = stat.ctime
     end
   end
 
