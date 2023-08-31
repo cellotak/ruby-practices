@@ -24,10 +24,10 @@ def fetch_file_details(target_directory_path, options)
   if options[:l]
     file_details.each do |file_detail|
       stat = File.stat("#{target_directory_path}/#{file_detail[:name]}")
-      file_detail[:mode] = stat.mode
+      file_detail[:mode] = stat.mode # 要変換
       file_detail[:hardlink_count] = stat.nlink
-      file_detail[:owner_user] = stat.uid
-      file_detail[:owner_group] = stat.gid
+      file_detail[:owner_user] = stat.uid # 要変換
+      file_detail[:owner_group] = stat.gid # 要変換
       file_detail[:size] = stat.size
       file_detail[:ctime] = stat.ctime
     end
@@ -41,14 +41,15 @@ def output(file_details, options)
 
   if options[:l]
     file_details.each do |file_detail|
-      print file_detail[:mode] # 要変換
-      print file_detail[:hardlink_count]
-      print file_detail[:owner_user] # 要変換
-      print file_detail[:owner_group] # 要変換
-      print file_detail[:size]
-      print file_detail[:ctime]
-      print file_detail[:name]
-      puts
+      detail_str = 
+        "#{file_detail[:mode]} "\
+        "#{file_detail[:hardlink_count]} "\
+        "#{file_detail[:owner_user]} "\
+        "#{file_detail[:owner_group]} "\
+        "#{file_detail[:size]} "\
+        "#{file_detail[:ctime]} "\
+        "#{file_detail[:name]}"
+      puts detail_str
     end
 
   else
