@@ -11,19 +11,25 @@ def parse_options(argv)
   options = {}
   opt.on('-a') { |v| options[:a] = v }
   opt.on('-r') { |v| options[:r] = v }
+  opt.on('-l') { |v| options[:l] = v }
   directory_paths = opt.parse(argv)
   [options, directory_paths]
 end
 
-def fetch_file_names(target_directory_path, options)
+def fetch_file_details(target_directory_path, options)
   dotmatch_flag = options[:a] ? File::FNM_DOTMATCH : 0
   file_names = Dir.glob('*', dotmatch_flag, base: target_directory_path)
+  file_details = file_names.map { |filename| { name: filename } }
 
-  stats = file_names.map{|file_name| File.stat("#{target_directory_path}/#{file_name}")}
-  
-  stats.each {|stat| puts  "#{stat.ctime} #{stat.size}"}
+  if options[:l]
+    file_details.each do |file_detail|
+      stat = File.stat("#{target_directory_path}/#{file_detail[:name]}")
+      file_detail[:ctime] = stat.ctime
+      file_detail[:size] = stat.size
+    end
+  end
 
-  options[:r] ? file_names.reverse : file_names
+  options[:r] ? file_details.reverse : file_details
 end
 
 def output(file_names)
@@ -50,5 +56,6 @@ end
 # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
 options, directory_paths = parse_options(ARGV)
 directory_path = directory_paths[0] || './'
-file_names = fetch_file_names(directory_path, options)
-output(file_names)
+file_dtails = fetch_file_details(directory_path, options)
+puts file_dtails
+# output(file_names)
