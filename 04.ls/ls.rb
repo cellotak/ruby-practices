@@ -11,6 +11,7 @@ def parse_options(argv)
   options = {}
   opt.on('-a') { |v| options[:a] = v }
   opt.on('-r') { |v| options[:r] = v }
+  opt.on('-l') { |v| options[:l] = v }
   directory_paths = opt.parse(argv)
   [options, directory_paths]
 end
@@ -19,16 +20,20 @@ def fetch_file_names(target_directory_path, options)
   dotmatch_flag = options[:a] ? File::FNM_DOTMATCH : 0
   file_names = Dir.glob('*', dotmatch_flag, base: target_directory_path)
 
-  stats = file_names.map{|file_name| File.stat("#{target_directory_path}/#{file_name}")}
-  
-  stats.each {|stat| puts  "#{stat.ctime} #{stat.size}"}
-
   options[:r] ? file_names.reverse : file_names
 end
 
-def output(file_names)
+def output(target_directory_path, file_names, options)
   return if file_names.empty?
 
+  if options[:l]
+    output_long_listing_format(target_directory_path, file_names, options) 
+  else 
+    output_default_format(file_names) 
+  end 
+end
+
+def output_default_format(file_names)
   row_count = ((file_names.size - 1) / MAX_COL_COUNT) + 1
   col_count = [file_names.size, MAX_COL_COUNT].min
 
@@ -47,8 +52,23 @@ def output(file_names)
   end
 end
 
+def output_long_listing_format(target_directory_path, file_names, options)
+  file_names.each do |file_name| 
+    stat = File.stat("#{target_directory_path}/#{file_name}")
+    detail_str = 
+      "#{stat.mode} "\
+      "#{stat.nlink} "\
+      "#{stat.uid} "\
+      "#{stat.gid} "\
+      "#{stat.size} "\
+      "#{stat.ctime} "\
+      "#{file_name}"
+    puts detail_str
+  end
+end
+
 # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
 options, directory_paths = parse_options(ARGV)
-directory_path = directory_paths[0] || './'
-file_names = fetch_file_names(directory_path, options)
-output(file_names)
+target_directory_path = directory_paths[0] || './'
+file_names = fetch_file_names(target_directory_path, options)
+output(target_directory_path, file_names, options)
