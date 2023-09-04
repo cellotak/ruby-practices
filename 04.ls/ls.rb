@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
 
 MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
@@ -55,11 +56,11 @@ end
 def output_long_listing_format(target_directory_path, file_names, options)
   file_names.each do |file_name| 
     stat = File.stat("#{target_directory_path}/#{file_name}")
-    detail_str = 
+    detail_str =
       "#{stat.mode} "\
       "#{stat.nlink} "\
-      "#{stat.uid} "\
-      "#{stat.gid} "\
+      "#{Etc.getpwuid(stat.uid).name} "\
+      "#{Etc.getgrgid(stat.gid).name} "\
       "#{stat.size} "\
       "#{stat.ctime} "\
       "#{file_name}"
