@@ -7,6 +7,8 @@ require 'etc'
 MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
+FILE_TYPE_LIST = {"01"=>"p", "02"=>"c", "04"=>"d", "06"=>"b", "10"=>"-", "12"=>"l", "14"=>"s"}
+
 def parse_options(argv)
   opt = OptionParser.new
   options = {}
@@ -56,8 +58,12 @@ end
 def output_long_listing_format(target_directory_path, file_names, options)
   file_names.each do |file_name| 
     stat = File.stat("#{target_directory_path}/#{file_name}")
+    file_type_num = format("%06o",stat.mode).slice(0..1) 
+    file_type_str = FILE_TYPE_LIST[file_type_num]
+
     detail_str =
-      "#{stat.mode} "\
+      "#{file_type_str} "\
+      "#{format("%06o",stat.mode)} "\
       "#{stat.nlink} "\
       "#{Etc.getpwuid(stat.uid).name} "\
       "#{Etc.getgrgid(stat.gid).name} "\
