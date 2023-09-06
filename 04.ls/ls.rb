@@ -58,12 +58,9 @@ end
 def output_long_listing_format(target_directory_path, file_names, options)
   file_names.each do |file_name| 
     stat = File.stat("#{target_directory_path}/#{file_name}")
-    file_type_num = format("%06o",stat.mode).slice(0..1) 
-    file_type_str = FILE_TYPE_LIST[file_type_num]
 
     detail_str =
-      "#{file_type_str} "\
-      "#{format("%06o",stat.mode)} "\
+      "#{convert_file_mode_to_str(stat)} "\
       "#{stat.nlink} "\
       "#{Etc.getpwuid(stat.uid).name} "\
       "#{Etc.getgrgid(stat.gid).name} "\
@@ -72,6 +69,36 @@ def output_long_listing_format(target_directory_path, file_names, options)
       "#{file_name}"
     puts detail_str
   end
+end
+
+def convert_file_mode_to_str(stat)
+  file_type_num = format("%06o",stat.mode).slice(0..1) 
+  file_type_str = FILE_TYPE_LIST[file_type_num]
+
+  permission_num = format("%06o",stat.mode).slice(3..5)
+  permission_str = convert_permission_num_to_str(permission_num)
+
+  file_type_str + permission_str
+
+end
+
+def convert_permission_num_to_str(permission_num)
+  permission_str_array = []
+  permission_num.chars.each do |nc|
+    n = nc.to_i
+    permission_array = ["-","-","-"]
+    if n / 4 == 1
+      permission_array[0] = "r"
+    end
+    if (n / 2) % 2 == 1
+      permission_array[1] = "w"
+    end
+    if n % 2 == 1
+      permission_array[2] = "x"
+    end
+    permission_str_array +=  permission_array
+  end
+  permission_str_array.join
 end
 
 # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
