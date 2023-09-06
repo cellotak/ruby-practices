@@ -65,7 +65,7 @@ def output_long_listing_format(target_directory_path, file_names, options)
       "#{Etc.getpwuid(stat.uid).name} "\
       "#{Etc.getgrgid(stat.gid).name} "\
       "#{stat.size} "\
-      "#{stat.ctime} "\
+      "#{stat.ctime.strftime("%b %-d %H:%M")} "\
       "#{file_name}"
     puts detail_str
   end
