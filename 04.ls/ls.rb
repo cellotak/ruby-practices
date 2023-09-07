@@ -82,18 +82,17 @@ def convert_stat_mode_to_str(stat_mode)
 end
 
 def convert_permission_num_to_str(permission_num)
-  permission_str_array = []
-  permission_num.chars.each do |nc|
-    n = nc.to_i
-    permission_array = Array.new(3, '-')
+  permission_num_digits = permission_num.chars.map(&:to_i)
+  partial_permission_strings = permission_num_digits.map do |digit|
+    partial_permission_string = '-' * 3
 
-    permission_array[0] = 'r' if n / 4 == 1
-    permission_array[1] = 'w' if (n / 2).odd?
-    permission_array[2] = 'x' if n.odd?
+    partial_permission_string[0] = 'r' if digit / 4 == 1
+    partial_permission_string[1] = 'w' if (digit / 2).odd?
+    partial_permission_string[2] = 'x' if digit.odd?
 
-    permission_str_array += permission_array
+    partial_permission_string
   end
-  permission_str_array.join
+  partial_permission_strings.join
 end
 
 # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
