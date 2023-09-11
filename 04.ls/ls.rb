@@ -44,6 +44,22 @@ def output(file_names, target_directory_path, options)
   end
 end
 
+def output_long_listing_format(file_names, target_directory_path)
+  file_names.each do |file_name|
+    stat = File.stat("#{target_directory_path}/#{file_name}")
+
+    detail_str =
+      "#{convert_stat_mode_to_str(stat.mode)} "\
+      "#{stat.nlink} "\
+      "#{Etc.getpwuid(stat.uid).name} "\
+      "#{Etc.getgrgid(stat.gid).name} "\
+      "#{stat.size} "\
+      "#{stat.ctime.strftime('%b %-d %H:%M')} "\
+      "#{file_name}"
+    puts detail_str
+  end
+end
+
 def output_default_format(file_names)
   row_count = ((file_names.size - 1) / MAX_COL_COUNT) + 1
   col_count = [file_names.size, MAX_COL_COUNT].min
@@ -60,22 +76,6 @@ def output_default_format(file_names)
       print target_file_name&.ljust(widths[col_index])
     end
     print "\n"
-  end
-end
-
-def output_long_listing_format(file_names, target_directory_path)
-  file_names.each do |file_name|
-    stat = File.stat("#{target_directory_path}/#{file_name}")
-
-    detail_str =
-      "#{convert_stat_mode_to_str(stat.mode)} "\
-      "#{stat.nlink} "\
-      "#{Etc.getpwuid(stat.uid).name} "\
-      "#{Etc.getgrgid(stat.gid).name} "\
-      "#{stat.size} "\
-      "#{stat.ctime.strftime('%b %-d %H:%M')} "\
-      "#{file_name}"
-    puts detail_str
   end
 end
 
