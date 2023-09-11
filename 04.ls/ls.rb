@@ -9,6 +9,14 @@ SPACE_WIDTH = 2
 
 FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
 
+# directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
+def main
+  options, directory_paths = parse_options(ARGV)
+  target_directory_path = directory_paths[0] || './'
+  file_names = fetch_file_names(target_directory_path, options)
+  output(file_names, target_directory_path, options)
+end
+
 def parse_options(argv)
   opt = OptionParser.new
   options = {}
@@ -95,8 +103,4 @@ def convert_permission_num_to_str(permission_num)
   partial_permission_strings.join
 end
 
-# directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
-options, directory_paths = parse_options(ARGV)
-target_directory_path = directory_paths[0] || './'
-file_names = fetch_file_names(target_directory_path, options)
-output(file_names, target_directory_path, options)
+main
