@@ -45,9 +45,10 @@ def output(file_names, target_directory_path, options)
 end
 
 def output_long_listing_format(file_names, target_directory_path)
+  block_count_total = 0
   file_names.each do |file_name|
     stat = File.stat("#{target_directory_path}/#{file_name}")
-
+    block_count_total += stat.blocks
     detail_str =
       "#{convert_stat_mode_to_str(stat.mode)} "\
       "#{stat.nlink} "\
@@ -58,6 +59,7 @@ def output_long_listing_format(file_names, target_directory_path)
       "#{file_name}"
     puts detail_str
   end
+  puts "total #{block_count_total}"
 end
 
 def output_default_format(file_names)
