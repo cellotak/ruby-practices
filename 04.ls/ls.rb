@@ -82,27 +82,27 @@ def output_default_format(file_names)
 end
 
 def convert_stat_mode_to_str(stat_mode)
-  file_type_num = format('%06o', stat_mode).slice(0..1)
-  file_type_str = FILE_TYPE_LIST[file_type_num]
+  file_type_code = format('%06o', stat_mode).slice(0..1)
+  file_type_char = FILE_TYPE_LIST[file_type_code]
 
-  permission_num = format('%06o', stat_mode).slice(3..5)
-  permission_str = convert_permission_num_to_str(permission_num)
+  permission_code = format('%06o', stat_mode).slice(3..5)
+  permission_str = convert_permission_code_to_str(permission_code)
 
-  file_type_str + permission_str
+  file_type_char + permission_str
 end
 
-def convert_permission_num_to_str(permission_num)
-  permission_num_digits = permission_num.chars.map(&:to_i)
-  partial_permission_strings = permission_num_digits.map do |digit|
-    partial_permission_string = '-' * 3
+def convert_permission_code_to_str(permission_code)
+  permission_code_nums = permission_code.chars.map(&:to_i)
+  permission_octets = permission_code_nums.map do |num|
+    permission_octet = '-' * 3
 
-    partial_permission_string[0] = 'r' if digit / 4 == 1
-    partial_permission_string[1] = 'w' if (digit / 2).odd?
-    partial_permission_string[2] = 'x' if digit.odd?
+    permission_octet[0] = 'r' if num / 4 == 1
+    permission_octet[1] = 'w' if (num / 2).odd?
+    permission_octet[2] = 'x' if num.odd?
 
-    partial_permission_string
+    permission_octet
   end
-  partial_permission_strings.join
+  permission_octets.join
 end
 
 main
