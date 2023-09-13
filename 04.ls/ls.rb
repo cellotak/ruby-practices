@@ -94,13 +94,13 @@ end
 def convert_permission_code_to_str(permission_code)
   permission_code_nums = permission_code.chars.map(&:to_i)
   permission_octets = permission_code_nums.map do |num|
-    permission_octet = '-' * 3
+    permission_octet_chars = []
 
-    permission_octet[0] = 'r' if num / 4 == 1
-    permission_octet[1] = 'w' if (num / 2).odd?
-    permission_octet[2] = 'x' if num.odd?
+    permission_octet_chars << (num / 4 == 1 ? 'r' : '-')
+    permission_octet_chars << ((num / 2).odd? ? 'w' : '-')
+    permission_octet_chars << (num.odd? ? 'x' : '-')
 
-    permission_octet
+    permission_octet_chars.join
   end
   permission_octets.join
 end
