@@ -46,20 +46,48 @@ end
 
 def output_long_listing_format(file_names, target_directory_path)
   block_count_total = 0
+
+  details_list = {}
+  details_size = 0
+
   file_names.each do |file_name|
     stat = File.stat("#{target_directory_path}/#{file_name}")
+    details = []
+    details << "#{convert_stat_mode_to_str(stat.mode)}"
+    details << "#{stat.nlink}"
+    details << "#{Etc.getpwuid(stat.uid).name}"
+    details << "#{Etc.getgrgid(stat.gid).name}"
+    details << "#{stat.size}"
+    details << "#{stat.ctime.strftime('%b')}"
+    details << "#{stat.ctime.strftime('%-d')}"
+    details << "#{stat.ctime.strftime('%H:%M')}"
+    details << "#{file_name}"
     block_count_total += stat.blocks
-    detail_str =
-      "#{convert_stat_mode_to_str(stat.mode)} "\
-      "#{stat.nlink} "\
-      "#{Etc.getpwuid(stat.uid).name} "\
-      "#{Etc.getgrgid(stat.gid).name} "\
-      "#{stat.size} "\
-      "#{stat.ctime.strftime('%b %-d %H:%M')} "\
-      "#{file_name}"
-    puts detail_str
+    details_size = details.size
+    details_list["#{file_name}"] = details
   end
+
+  widths = []
+  details_size.times do |index|
+    lengths = details_list.map{|file_name, details| details[index].length}
+    widths << lengths.max + 1
+  end
+  p widths
+
   puts "total #{block_count_total}"
+
+
+  file_names.each do |file_name|
+    details_size.times do |index| 
+      if  /^\d+$/.match("#{details_list["#{file_name}"][index]}")
+        print "#{details_list["#{file_name}"][index]} ".rjust(widths[index])
+      else
+        print "#{details_list["#{file_name}"][index]}".ljust(widths[index])
+      end
+    end
+    print "\n"
+  end
+
 end
 
 def output_default_format(file_names)
