@@ -47,47 +47,49 @@ end
 def output_long_listing_format(file_names, target_directory_path)
   block_count_total = 0
 
-  details_list = {}
-  details_size = 0
+  details_by_file_name = {}
 
   file_names.each do |file_name|
     stat = File.stat("#{target_directory_path}/#{file_name}")
+
     details = []
-    details << "#{convert_stat_mode_to_str(stat.mode)}"
-    details << "#{stat.nlink}"
-    details << "#{Etc.getpwuid(stat.uid).name}"
-    details << "#{Etc.getgrgid(stat.gid).name}"
-    details << "#{stat.size}"
-    details << "#{stat.ctime.strftime('%b')}"
-    details << "#{stat.ctime.strftime('%-d')}"
-    details << "#{stat.ctime.strftime('%H:%M')}"
-    details << "#{file_name}"
+    details << convert_stat_mode_to_str(stat.mode).to_s
+    details << stat.nlink.to_s
+    details << Etc.getpwuid(stat.uid).name.to_s
+    details << Etc.getgrgid(stat.gid).name.to_s
+    details << stat.size.to_s
+    details << stat.ctime.strftime('%b').to_s
+    details << stat.ctime.strftime('%-d').to_s
+    details << stat.ctime.strftime('%H:%M').to_s
+    details << file_name.to_s
+
     block_count_total += stat.blocks
-    details_size = details.size
-    details_list["#{file_name}"] = details
+
+    details_by_file_name[file_name.to_s] = details
   end
 
-  widths = []
+  details_size = details_by_file_name[file_names[0]].size
+
+  max_widths_by_detail = []
   details_size.times do |index|
-    lengths = details_list.map{|file_name, details| details[index].length}
-    widths << lengths.max + 1
+    detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[index].length }
+    max_widths_by_detail << detail_widths_by_file_name.max
   end
-  p widths
 
   puts "total #{block_count_total}"
 
-
   file_names.each do |file_name|
-    details_size.times do |index| 
-      if  /^\d+$/.match("#{details_list["#{file_name}"][index]}")
-        print "#{details_list["#{file_name}"][index]} ".rjust(widths[index])
+    details_size.times do |index|
+      target_detail = details_by_file_name[file_name.to_s][index].to_s
+      if /^\d+$/.match?(target_detail)
+        print target_detail.rjust(max_widths_by_detail[index])
       else
-        print "#{details_list["#{file_name}"][index]}".ljust(widths[index])
+        print target_detail.ljust(max_widths_by_detail[index])
       end
+      print ' '
     end
     print "\n"
   end
-
 end
 
 def output_default_format(file_names)
