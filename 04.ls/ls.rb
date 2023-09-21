@@ -56,7 +56,7 @@ def output_long_listing_format(file_names, target_directory_path)
     details_by_file_name[file_name] = details
   end
 
-  max_widths_by_detail = fetch_max_widths_by_detail(details_by_file_name)
+  max_widths_by_detail = get_max_widths_by_detail(details_by_file_name)
 
   puts "total #{block_count_total}"
 
@@ -103,7 +103,7 @@ def convert_stat_to_details(stat)
   details << stat.ctime.strftime('%b %e %H:%M')
 end
 
-def fetch_max_widths_by_detail(details_by_file_name)
+def get_max_widths_by_detail(details_by_file_name)
   max_widths_by_detail = []
   details_size = details_by_file_name.values[0].length
   details_size.times do |index|
