@@ -95,14 +95,12 @@ end
 
 def convert_stat_to_details(stat)
   details = []
-  details << convert_stat_mode_to_str(stat.mode).to_s
+  details << convert_stat_mode_to_str(stat.mode)
   details << stat.nlink.to_s
-  details << Etc.getpwuid(stat.uid).name.to_s
-  details << Etc.getgrgid(stat.gid).name.to_s
+  details << Etc.getpwuid(stat.uid).name
+  details << Etc.getgrgid(stat.gid).name
   details << stat.size.to_s
-  details << stat.ctime.strftime('%b').to_s
-  details << stat.ctime.strftime('%-d').to_s
-  details << stat.ctime.strftime('%H:%M').to_s
+  details << stat.ctime.strftime('%b %e %H:%M')
 end
 
 def fetch_max_widths_by_detail(details_by_file_name)
