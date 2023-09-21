@@ -15,7 +15,7 @@ def main
   # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
   directory_path = directory_paths[0] || './'
   file_names = fetch_file_names(directory_path, options)
-  output(file_names, target_directory_path, options)
+  output(file_names, directory_path, options)
 end
 
 def parse_options(argv)
