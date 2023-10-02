@@ -9,7 +9,6 @@ SPACE_WIDTH = 2
 
 FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
 
-
 def main
   options, directory_paths = parse_options(ARGV)
   # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
@@ -56,17 +55,16 @@ def output_long_listing_format(file_names, target_directory_path)
     details_by_file_name[file_name] = details
   end
 
-  max_widths_by_detail = get_max_widths_by_detail(details_by_file_name)
-
   puts "total #{block_count_total}"
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
     details.each_with_index do |detail, index|
+      width = get_max_width_by_detail(details_by_file_name, index)
       if /^\d+$/.match?(detail)
-        print detail.rjust(max_widths_by_detail[index])
+        print detail.rjust(width)
       else
-        print detail.ljust(max_widths_by_detail[index])
+        print detail.ljust(width)
       end
       print ' '
     end
@@ -103,14 +101,9 @@ def convert_stat_to_details(stat)
   details << stat.ctime.strftime('%b %e %H:%M')
 end
 
-def get_max_widths_by_detail(details_by_file_name)
-  max_widths_by_detail = []
-  details_size = details_by_file_name.values[0].length
-  details_size.times do |index|
-    detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[index].length }
-    max_widths_by_detail << detail_widths_by_file_name.max
-  end
-  max_widths_by_detail
+def get_max_width_by_detail(details_by_file_name, index)
+  detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[index].length }
+  detail_widths_by_file_name.max
 end
 
 def convert_stat_mode_to_str(stat_mode)
