@@ -45,17 +45,9 @@ def output(file_names, target_directory_path, options)
 end
 
 def output_long_listing_format(file_names, target_directory_path)
-  block_count_total = 0
-  details_by_file_name = {}
+  details_by_file_name = get_details_by_file_name(file_names, target_directory_path)
 
-  file_names.each do |file_name|
-    stat = File.stat("#{target_directory_path}/#{file_name}")
-    block_count_total += stat.blocks
-    details = convert_stat_to_details(stat)
-    details_by_file_name[file_name] = details
-  end
-
-  puts "total #{block_count_total}"
+  puts "total #{calc_block_count_total(file_names, target_directory_path)}"
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
@@ -70,6 +62,24 @@ def output_long_listing_format(file_names, target_directory_path)
     end
     puts file_name
   end
+end
+
+def get_details_by_file_name(file_names, target_directory_path)
+  details_by_file_name = {}
+  file_names.each do |file_name|
+    stat = File.stat("#{target_directory_path}/#{file_name}")
+    details = convert_stat_to_details(stat)
+    details_by_file_name[file_name] = details
+  end
+  details_by_file_name
+end
+
+def calc_block_count_total(file_names, target_directory_path)
+  block_count_total = 0
+  file_names.each do |file_name|
+    block_count_total += File.stat("#{target_directory_path}/#{file_name}").blocks
+  end
+  block_count_total
 end
 
 def output_default_format(file_names)
