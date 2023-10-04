@@ -51,13 +51,14 @@ def output_long_listing_format(file_names, target_directory_path)
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
+    details_output_order = %i[stat_mode nlink username groupname size ctime]
 
-    details.each_with_index do |detail, index|
-      width = get_max_width_by_detail(details_by_file_name, index)
-      if /^\d+$/.match?(detail)
-        print detail.rjust(width)
+    details_output_order.each do |key|
+      width = get_max_width_by_detail(details_by_file_name, key)
+      if /^\d+$/.match?(details[key])
+        print details[key].rjust(width)
       else
-        print detail.ljust(width)
+        print details[key].ljust(width)
       end
       print ' '
     end
@@ -84,13 +85,14 @@ def get_details_by_file_name(file_names, target_directory_path)
 end
 
 def convert_stat_to_details(stat)
-  details = []
-  details << convert_stat_mode_to_str(stat.mode)
-  details << stat.nlink.to_s
-  details << Etc.getpwuid(stat.uid).name
-  details << Etc.getgrgid(stat.gid).name
-  details << stat.size.to_s
-  details << stat.ctime.strftime('%b %e %H:%M')
+  details = {}
+  details[:stat_mode] = convert_stat_mode_to_str(stat.mode)
+  details[:nlink] = stat.nlink.to_s
+  details[:username] = Etc.getpwuid(stat.uid).name
+  details[:groupname] = Etc.getgrgid(stat.gid).name
+  details[:size] = stat.size.to_s
+  details[:ctime] = stat.ctime.strftime('%b %e %H:%M')
+  details
 end
 
 def convert_stat_mode_to_str(stat_mode)
@@ -117,8 +119,8 @@ def convert_permission_code_to_str(permission_code)
   permission_octets.join
 end
 
-def get_max_width_by_detail(details_by_file_name, index)
-  detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[index].length }
+def get_max_width_by_detail(details_by_file_name, key)
+  detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[key].length }
   detail_widths_by_file_name.max
 end
 
