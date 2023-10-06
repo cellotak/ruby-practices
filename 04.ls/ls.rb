@@ -47,14 +47,14 @@ end
 def output_long_listing_format(file_names, target_directory_path)
   puts "total #{calc_block_count_total(file_names, target_directory_path)}"
 
-  details_by_file_name = get_details_by_file_name(file_names, target_directory_path)
+  details_by_file_name = build_details_by_file_name(file_names, target_directory_path)
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
     details_output_order = %i[stat_mode nlink username groupname size ctime]
 
     details_output_order.each do |key|
-      width = get_max_width_by_detail(details_by_file_name, key)
+      width = calc_max_width_by_detail(details_by_file_name, key)
       if /^\d+$/.match?(details[key])
         print details[key].rjust(width)
       else
@@ -74,7 +74,7 @@ def calc_block_count_total(file_names, target_directory_path)
   block_count_total
 end
 
-def get_details_by_file_name(file_names, target_directory_path)
+def build_details_by_file_name(file_names, target_directory_path)
   details_by_file_name = {}
   file_names.each do |file_name|
     stat = File.stat("#{target_directory_path}/#{file_name}")
@@ -119,7 +119,7 @@ def convert_permission_code_to_str(permission_code)
   permission_octets.join
 end
 
-def get_max_width_by_detail(details_by_file_name, key)
+def calcu_max_width_by_detail(details_by_file_name, key)
   detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[key].length }
   detail_widths_by_file_name.max
 end
