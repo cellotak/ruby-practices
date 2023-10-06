@@ -75,13 +75,11 @@ def calc_block_count_total(file_names, directory_path)
 end
 
 def build_details_by_file_name(file_names, directory_path)
-  details_by_file_name = {}
-  file_names.each do |file_name|
+  file_names.to_h do |file_name|
     stat = File.stat("#{directory_path}/#{file_name}")
     details = convert_stat_to_details(stat)
-    details_by_file_name[file_name] = details
+    [file_name, details]
   end
-  details_by_file_name
 end
 
 def convert_stat_to_details(stat)
