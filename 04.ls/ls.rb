@@ -27,27 +27,27 @@ def parse_options(argv)
   [options, directory_paths]
 end
 
-def fetch_file_names(target_directory_path, options)
+def fetch_file_names(directory_path, options)
   dotmatch_flag = options[:a] ? File::FNM_DOTMATCH : 0
-  file_names = Dir.glob('*', dotmatch_flag, base: target_directory_path)
+  file_names = Dir.glob('*', dotmatch_flag, base: directory_path)
 
   options[:r] ? file_names.reverse : file_names
 end
 
-def output(file_names, target_directory_path, options)
+def output(file_names, directory_path, options)
   return if file_names.empty?
 
   if options[:l]
-    output_long_listing_format(file_names, target_directory_path)
+    output_long_listing_format(file_names, directory_path)
   else
     output_default_format(file_names)
   end
 end
 
-def output_long_listing_format(file_names, target_directory_path)
-  puts "total #{calc_block_count_total(file_names, target_directory_path)}"
+def output_long_listing_format(file_names, directory_path)
+  puts "total #{calc_block_count_total(file_names, directory_path)}"
 
-  details_by_file_name = build_details_by_file_name(file_names, target_directory_path)
+  details_by_file_name = build_details_by_file_name(file_names, directory_path)
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
@@ -66,17 +66,17 @@ def output_long_listing_format(file_names, target_directory_path)
   end
 end
 
-def calc_block_count_total(file_names, target_directory_path)
+def calc_block_count_total(file_names, directory_path)
   file_names.map do |file_name| 
-    file_path = "#{target_directory_path}/#{file_name}"
+    file_path = "#{directory_path}/#{file_name}"
     File.stat(file_path).blocks
   end.sum
 end
 
-def build_details_by_file_name(file_names, target_directory_path)
+def build_details_by_file_name(file_names, directory_path)
   details_by_file_name = {}
   file_names.each do |file_name|
-    stat = File.stat("#{target_directory_path}/#{file_name}")
+    stat = File.stat("#{directory_path}/#{file_name}")
     details = convert_stat_to_details(stat)
     details_by_file_name[file_name] = details
   end
