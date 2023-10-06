@@ -8,8 +8,8 @@ MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
 FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime]
-RJUST_LIST = %i[nlink size ]
+DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime].freeze
+RJUST_LIST = %i[nlink size].freeze
 
 def main
   options, directory_paths = parse_options(ARGV)
@@ -51,15 +51,16 @@ def output_long_listing_format(file_names, directory_path)
 
   details_by_file_name = build_details_by_file_name(file_names, directory_path)
 
+  max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
+
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
 
     DETAILS_OUTPUT_ORDER.each do |key|
-      width = calc_max_width_by_detail(details_by_file_name, key)
       if RJUST_LIST.include?(key)
-        print details[key].rjust(width)
+        print details[key].rjust(max_width_by_detail[key])
       else
-        print details[key].ljust(width)
+        print details[key].ljust(max_width_by_detail[key])
       end
       print ' '
     end
@@ -68,7 +69,7 @@ def output_long_listing_format(file_names, directory_path)
 end
 
 def calc_block_count_total(file_names, directory_path)
-  file_names.map do |file_name| 
+  file_names.map do |file_name|
     file_path = "#{directory_path}/#{file_name}"
     File.stat(file_path).blocks
   end.sum
@@ -83,13 +84,13 @@ def build_details_by_file_name(file_names, directory_path)
 end
 
 def convert_stat_to_details(stat)
-  details = {
-  stat_mode: convert_stat_mode_to_str(stat.mode),
-  nlink: stat.nlink.to_s,
-  username: Etc.getpwuid(stat.uid).name,
-  groupname: Etc.getgrgid(stat.gid).name,
-  size: stat.size.to_s,
-  ctime: stat.ctime.strftime('%b %e %H:%M'),
+  {
+    stat_mode: convert_stat_mode_to_str(stat.mode),
+    nlink: stat.nlink.to_s,
+    username: Etc.getpwuid(stat.uid).name,
+    groupname: Etc.getgrgid(stat.gid).name,
+    size: stat.size.to_s,
+    ctime: stat.ctime.strftime('%b %e %H:%M')
   }
 end
 
@@ -117,9 +118,11 @@ def convert_permission_code_to_str(permission_code)
   permission_octets.join
 end
 
-def calc_max_width_by_detail(details_by_file_name, key)
-  detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[key].length }
-  detail_widths_by_file_name.max
+def calc_max_width_by_detail(details_by_file_name)
+  DETAILS_OUTPUT_ORDER.to_h do |key|
+    widths_by_detail = details_by_file_name.map { |_file_name, details| details[key].length }
+    [key, widths_by_detail.max]
+  end
 end
 
 def output_default_format(file_names)
