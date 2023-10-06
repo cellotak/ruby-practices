@@ -67,11 +67,10 @@ def output_long_listing_format(file_names, target_directory_path)
 end
 
 def calc_block_count_total(file_names, target_directory_path)
-  block_count_total = 0
-  file_names.each do |file_name|
-    block_count_total += File.stat("#{target_directory_path}/#{file_name}").blocks
-  end
-  block_count_total
+  file_names.map do |file_name| 
+    file_path = "#{target_directory_path}/#{file_name}"
+    File.stat(file_path).blocks
+  end.sum
 end
 
 def build_details_by_file_name(file_names, target_directory_path)
@@ -119,7 +118,7 @@ def convert_permission_code_to_str(permission_code)
   permission_octets.join
 end
 
-def calcu_max_width_by_detail(details_by_file_name, key)
+def calc_max_width_by_detail(details_by_file_name, key)
   detail_widths_by_file_name = details_by_file_name.map { |_file_name, details| details[key].length }
   detail_widths_by_file_name.max
 end
