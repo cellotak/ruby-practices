@@ -9,6 +9,8 @@ SPACE_WIDTH = 2
 
 FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
 
+DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime]
+
 def main
   options, directory_paths = parse_options(ARGV)
   # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
@@ -51,9 +53,8 @@ def output_long_listing_format(file_names, directory_path)
 
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
-    details_output_order = %i[stat_mode nlink username groupname size ctime]
 
-    details_output_order.each do |key|
+    DETAILS_OUTPUT_ORDER.each do |key|
       width = calc_max_width_by_detail(details_by_file_name, key)
       if /^\d+$/.match?(details[key])
         print details[key].rjust(width)
