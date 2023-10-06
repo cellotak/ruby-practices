@@ -8,8 +8,8 @@ MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
 FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-
 DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime]
+RJUST_LIST = %i[nlink size ]
 
 def main
   options, directory_paths = parse_options(ARGV)
@@ -56,7 +56,7 @@ def output_long_listing_format(file_names, directory_path)
 
     DETAILS_OUTPUT_ORDER.each do |key|
       width = calc_max_width_by_detail(details_by_file_name, key)
-      if /^\d+$/.match?(details[key])
+      if RJUST_LIST.include?(key)
         print details[key].rjust(width)
       else
         print details[key].ljust(width)
