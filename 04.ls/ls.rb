@@ -84,14 +84,14 @@ def build_details_by_file_name(file_names, directory_path)
 end
 
 def convert_stat_to_details(stat)
-  details = {}
-  details[:stat_mode] = convert_stat_mode_to_str(stat.mode)
-  details[:nlink] = stat.nlink.to_s
-  details[:username] = Etc.getpwuid(stat.uid).name
-  details[:groupname] = Etc.getgrgid(stat.gid).name
-  details[:size] = stat.size.to_s
-  details[:ctime] = stat.ctime.strftime('%b %e %H:%M')
-  details
+  details = {
+  stat_mode: convert_stat_mode_to_str(stat.mode),
+  nlink: stat.nlink.to_s,
+  username: Etc.getpwuid(stat.uid).name,
+  groupname: Etc.getgrgid(stat.gid).name,
+  size: stat.size.to_s,
+  ctime: stat.ctime.strftime('%b %e %H:%M'),
+  }
 end
 
 def convert_stat_mode_to_str(stat_mode)
