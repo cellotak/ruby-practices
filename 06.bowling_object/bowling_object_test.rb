@@ -15,6 +15,7 @@ class BowlingTest < Minitest::Test
   end
 
   def test_shot
-    assert Shot.new
+    shot = Shot.new('X')
+    assert_equal 'X', shot.mark
   end
 end
