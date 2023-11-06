@@ -6,15 +6,7 @@ require_relative './game'
 require_relative './shot'
 
 class BowlingTest < Minitest::Test
-  def test_frame
-    assert Frame.new
-  end
-
-  def test_game
-    assert Game.new
-  end
-
-  def test_shot
+  def test_shot_new
     shot = Shot.new('X')
     assert_equal 'X', shot.mark
   end
@@ -28,4 +20,17 @@ class BowlingTest < Minitest::Test
     shot = Shot.new('1')
     assert_equal 1, shot.score
   end
+
+  def test_frame_new
+    frame = Frame.new('1','2','X')
+    assert_equal '1', frame.first_shot.mark
+    assert_equal '2', frame.second_shot.mark
+    assert_equal 'X', frame.third_shot.mark
+  end
+
+  def test_game
+    assert Game.new
+  end
+
 end
+
