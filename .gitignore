@@ -118,3 +118,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# ボウリングプログラムのメモ用
+./06.bowling_objext/bowling_memo.md
