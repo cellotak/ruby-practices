@@ -6,4 +6,8 @@ class Frame
     @second_shot = Shot.new(second_mark)
     @third_shot = Shot.new(third_mark)
   end
+
+  def score
+    [@first_shot, @second_shot, @third_shot].map(&:score).sum
+  end
 end

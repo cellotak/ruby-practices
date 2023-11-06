@@ -28,6 +28,11 @@ class BowlingTest < Minitest::Test
     assert_equal 'X', frame.third_shot.mark
   end
 
+  def test_frame_score
+    frame = Frame.new('1','2')
+    assert_equal 3, frame.score
+  end
+
   def test_game
     assert Game.new
   end
