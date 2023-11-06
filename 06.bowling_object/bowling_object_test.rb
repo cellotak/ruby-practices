@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
+require_relative './shot'
 require_relative './frame'
 require_relative './game'
-require_relative './shot'
 
 class BowlingTest < Minitest::Test
   def test_shot_new
@@ -33,8 +33,11 @@ class BowlingTest < Minitest::Test
     assert_equal 3, frame.score
   end
 
-  def test_game
-    assert Game.new
+  def test_game_new
+    frames = [['1','2'],['3','4']]
+    game = Game.new(frames)
+    assert_equal 3, game.frames[0].score
+    assert_equal 7, game.frames[1].score
   end
 
 end
