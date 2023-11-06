@@ -18,4 +18,14 @@ class BowlingTest < Minitest::Test
     shot = Shot.new('X')
     assert_equal 'X', shot.mark
   end
+
+  def test_socore_when_mark_is_X
+    shot = Shot.new('X')
+    assert_equal 10, shot.score
+  end
+  
+  def test_score_when_mark_is_not_X
+    shot = Shot.new('1')
+    assert_equal 1, shot.score
+  end
 end
