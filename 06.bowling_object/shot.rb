@@ -1,13 +1,8 @@
 class Shot 
-  attr_accessor :mark
+  attr_reader :shot_char, :shot_score
 
-  def initialize(mark)
-    @mark = mark
+  def initialize(char)
+    @shot_char = char
+    @shot_score = shot_char == 'X' ? 10 : shot_char.to_i
   end
-
-  def score
-    return 10 if mark == 'X'
-    mark.to_i
-  end
-
 end
