@@ -16,10 +16,42 @@ class BowlingTest < Minitest::Test
     assert_equal 10, shot.shot_score
   end
   
-  # def test_score_when_mark_is_not_X
-  #   shot = Shot.new('1')
-  #   assert_equal 1, shot.score
-  # end
+  def test_shot_score_when_shot_char_is_not_X
+    shot = Shot.new('1')
+    assert_equal 1, shot.shot_score
+  end
+
+  def test_frame_new
+    frame = Frame.new
+    assert_equal [], frame.shots
+  end
+
+  def test_add_shot_with_strike
+    frame = Frame.new
+    frame.add_shot('X')
+    assert_equal 10, frame.shots[0].shot_score
+  end
+
+  def test_add_shot_with_not_strike
+    frame = Frame.new
+    frame.add_shot('3')
+    frame.add_shot('2')
+    assert_equal 3, frame.shots[0].shot_score
+    assert_equal 2, frame.shots[1].shot_score
+  end
+
+  def test_strike?
+    frame = Frame.new
+    frame.add_shot('X')
+    assert frame.strike?
+  end
+  
+  def test_spare?
+    frame = Frame.new
+    frame.add_shot('6')
+    frame.add_shot('4')
+    assert frame.spare?
+  end
 
   # def test_frame_new
   #   frame = Frame.new('1','2','X')

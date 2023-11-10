@@ -1,13 +1,19 @@
 class Frame
-  attr_reader :first_shot, :second_shot, :third_shot
+  attr_reader :shots
 
-  def initialize(first_mark, second_mark, third_mark = nil)
-    @first_shot = Shot.new(first_mark)
-    @second_shot = Shot.new(second_mark)
-    @third_shot = Shot.new(third_mark)
+  def initialize
+    @shots = []
   end
 
-  def score
-    [@first_shot, @second_shot, @third_shot].map(&:score).sum
+  def add_shot(char)
+    shots << Shot.new(char)
+  end
+
+  def strike?
+    shots[0].shot_score == 10
+  end
+
+  def spare?
+    shots.map(&:shot_score).sum == 10
   end
 end
