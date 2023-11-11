@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../libs/shot'
 require_relative '../libs/frame'
 
 class FrameTest < Minitest::Test
