@@ -4,6 +4,7 @@ require 'minitest/autorun'
 require_relative '../libs/frame'
 
 class FrameTest < Minitest::Test
+
   def test_frame_new
     frame = Frame.new
     assert_equal [], frame.shots
@@ -34,5 +35,22 @@ class FrameTest < Minitest::Test
     frame.add_shot('6')
     frame.add_shot('4')
     assert frame.spare?
+  end
+
+  def test_bonus_pended?
+    frame = Frame.new
+    assert frame.bonus_pended?
+  end
+
+  def test_bonus_not_pended?
+    frame = Frame.new
+    frame.add_bonus(10)
+    refute frame.bonus_pended?
+  end
+
+  def test_bonus_is_10
+    frame = Frame.new
+    frame.add_bonus(10)
+    assert_equal 10, frame.bonus.bonus_score
   end
 end

@@ -1,8 +1,7 @@
 class Bonus
   attr_accessor :bonus_score
 
-  def pended?
-    bonus_score.nil?
+  def initialize(bonus_score)
+    @bonus_score = bonus_score
   end
-
 end
