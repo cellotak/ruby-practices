@@ -64,7 +64,7 @@ class FrameTest < Minitest::Test
     refute frame.bonus_pended?
   end
 
-  def test_bonus_is_10
+  def test_bonus
     frame = Frame.new
     frame.add_bonus(10)
     assert_equal 10, frame.bonus.bonus_score

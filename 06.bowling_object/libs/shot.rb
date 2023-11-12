@@ -1,4 +1,6 @@
-class Shot 
+# frozen_string_literal: true
+
+class Shot
   attr_reader :shot_char, :shot_score
 
   def initialize(char)

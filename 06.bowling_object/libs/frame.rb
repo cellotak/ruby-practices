@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Frame
   attr_reader :shots, :bonus
 
@@ -22,6 +24,6 @@ class Frame
   end
 
   def spare?
-    @shots.map(&:shot_score).sum == 10 && !self.strike?
+    @shots.map(&:shot_score).sum == 10 && !strike?
   end
 end

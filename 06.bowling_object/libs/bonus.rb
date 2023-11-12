@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Bonus
   attr_accessor :bonus_score
 
