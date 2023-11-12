@@ -22,6 +22,6 @@ class Frame
   end
 
   def spare?
-    @shots.map(&:shot_score).sum == 10
+    @shots.map(&:shot_score).sum == 10 && !self.strike?
   end
 end

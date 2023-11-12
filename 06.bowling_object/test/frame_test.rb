@@ -4,7 +4,6 @@ require 'minitest/autorun'
 require_relative '../libs/frame'
 
 class FrameTest < Minitest::Test
-
   def test_frame_new
     frame = Frame.new
     assert_equal [], frame.shots
@@ -24,17 +23,34 @@ class FrameTest < Minitest::Test
     assert_equal 2, frame.shots[1].shot_score
   end
 
+  # ストライクの時 strike?はtrue
   def test_strike?
     frame = Frame.new
     frame.add_shot('X')
     assert frame.strike?
   end
-  
+
+  # スペアだがストライク出ないとき、strike?はfalse
+  def test_not_strike?
+    frame = Frame.new
+    frame.add_shot('6')
+    frame.add_shot('4')
+    refute frame.strike?
+  end
+
+  # 1投目と2投目の和が10の時spare?がtrue
   def test_spare?
     frame = Frame.new
     frame.add_shot('6')
     frame.add_shot('4')
     assert frame.spare?
+  end
+
+  # ストライクの時、1投目と2投目の和が10だがspare?はfalse
+  def test_spare_2?
+    frame = Frame.new
+    frame.add_shot('X')
+    refute frame.spare?
   end
 
   def test_bonus_pended?
