@@ -46,8 +46,8 @@ class FrameTest < Minitest::Test
     assert frame.spare?
   end
 
-  # ストライクの時、1投目と2投目の和が10だがspare?はfalse
-  def test_spare_2?
+  # ストライクの時、spare?はfalse
+  def test_spare_when_strike
     frame = Frame.new
     frame.add_shot('X')
     refute frame.spare?
@@ -64,7 +64,7 @@ class FrameTest < Minitest::Test
     refute frame.bonus_pended?
   end
 
-  def test_bonus
+  def test_bonus_score
     frame = Frame.new
     frame.add_bonus(10)
     assert_equal 10, frame.bonus.bonus_score
