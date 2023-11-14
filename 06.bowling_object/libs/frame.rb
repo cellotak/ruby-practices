@@ -54,5 +54,4 @@ class Frame
       shots.map(&:shot_score).sum + bonus.bonus_score
     end
   end
-
 end

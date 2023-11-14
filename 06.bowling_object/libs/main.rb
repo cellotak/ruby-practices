@@ -8,16 +8,15 @@ def calc_total_score
   game = Game.new
   shot_chars = ARGV[0].split(',')
   shot_chars.each do |shot_char|
-     game.add_shot(shot_char)
+    game.add_shot(shot_char)
   end
-  
 end
 
 def check_all_shots
   game = Game.new
   shot_chars = ARGV[0].split(',')
   shot_chars.each do |shot_char|
-     game.add_shot(shot_char)
+    game.add_shot(shot_char)
   end
 
   all_frames = []
@@ -31,6 +30,5 @@ def check_all_shots
   end
   all_frames
 end
-
 
 #=> 139
