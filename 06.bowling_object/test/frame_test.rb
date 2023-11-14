@@ -167,4 +167,19 @@ class FrameTest < Minitest::Test
     frame.add_shot('X')
     assert frame.completed?
   end
+  
+  def test_frame_score_with_bonus
+    frame = Frame.new(1)
+    frame.add_shot('6')
+    frame.add_shot('4')
+    frame.add_bonus(3)
+    assert_equal 13, frame.frame_score
+  end
+
+  def test_frame_score_without_bonus
+    frame = Frame.new(1)
+    frame.add_shot('6')
+    frame.add_shot('4')
+    assert_equal nil, frame.frame_score
+  end
 end

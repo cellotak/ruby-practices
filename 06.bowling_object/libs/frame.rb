@@ -42,4 +42,13 @@ class Frame
       strike? || @shots[1]
     end
   end
+
+  def frame_score
+    if bonus_pended?
+      nil
+    else
+      shots.map(&:shot_score).sum + bonus.bonus_score
+    end
+  end
+
 end
