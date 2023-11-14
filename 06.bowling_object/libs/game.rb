@@ -23,4 +23,8 @@ class Game
   def current_frame
     @frames.last
   end
+
+  
+
+
 end
