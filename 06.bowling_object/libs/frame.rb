@@ -15,7 +15,7 @@ class Frame
     @shots << Shot.new(char)
   end
 
-  def add_bonus(bonus_score)
+  def comfirm_bonus(bonus_score)
     @bonus = Bonus.new(bonus_score)
   end
 
