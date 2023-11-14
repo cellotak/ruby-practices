@@ -7,12 +7,13 @@ class Game
 
   def initialize
     @frames = []
-    @frames << Frame.new
+    @frames << Frame.new(1)
   end
 
   def add_shot(char)
     if current_frame.completed?
-      frames << Frame.new
+      next_frame_number = frames.size + 1
+      frames << Frame.new(next_frame_number)
       current_frame.add_shot(char)
     else
       current_frame.add_shot(char)

@@ -6,9 +6,9 @@ require_relative '../libs/bonus'
 class Frame
   attr_reader :shots, :bonus, :frame_number
 
-  def initialize
+  def initialize(frame_number)
     @shots = []
-    # @frame_number = frame_number
+    @frame_number = frame_number
   end
 
   def add_shot(char)
@@ -31,8 +31,8 @@ class Frame
     @shots&.map(&:shot_score)&.sum == 10 && !strike?
   end
 
-  def completed?(last_frame_flag: false)
-    if last_frame_flag
+  def completed?
+    if frame_number == 10
       if strike? || spare?
         @shots[2]
       else
