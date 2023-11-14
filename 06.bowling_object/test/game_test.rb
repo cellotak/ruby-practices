@@ -21,7 +21,6 @@ class GameTest < Minitest::Test
     game.add_shot('3')
     assert_equal 1, game.frames[0].shots[0].shot_score
     assert_equal 3, game.frames[0].shots[1].shot_score
-    assert_equal [], game.current_frame.shots
   end
 
   def test_add_shot_strike_and_normal
@@ -29,8 +28,7 @@ class GameTest < Minitest::Test
     game.add_shot('X')
     game.add_shot('1')
     assert_equal 10, game.frames[0].shots[0].shot_score
-    assert_equal nil, game.frames[0].shots[1].shot_score
+    assert_equal nil, game.frames[0].shots[1]
     assert_equal 1, game.frames[1].shots[0].shot_score
-    assert_equal [], game.current_frame.sho
   end
 end

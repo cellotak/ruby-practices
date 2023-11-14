@@ -4,10 +4,11 @@ require_relative '../libs/shot'
 require_relative '../libs/bonus'
 
 class Frame
-  attr_reader :shots, :bonus
+  attr_reader :shots, :bonus, :frame_number
 
   def initialize
     @shots = []
+    # @frame_number = frame_number
   end
 
   def add_shot(char)
