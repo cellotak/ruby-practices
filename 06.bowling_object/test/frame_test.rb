@@ -182,4 +182,24 @@ class FrameTest < Minitest::Test
     frame.add_shot('4')
     assert_equal nil, frame.frame_score
   end
+
+  def test_no_mark_with_no_mark
+    frame = Frame.new(1)
+    frame.add_shot('1')
+    frame.add_shot('2')
+    assert frame.no_mark?
+  end
+
+  def test_no_mark_with_strike
+    frame = Frame.new(1)
+    frame.add_shot('X')
+    refute frame.no_mark?
+  end
+
+  def test_no_mark_with_spare
+    frame = Frame.new(1)
+    frame.add_shot('6')
+    frame.add_shot('4')
+    refute frame.no_mark?
+  end
 end

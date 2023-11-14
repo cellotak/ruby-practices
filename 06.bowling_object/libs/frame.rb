@@ -31,6 +31,10 @@ class Frame
     @shots&.map(&:shot_score)&.sum == 10 && !strike?
   end
 
+  def no_mark?
+    !(strike? || spare?)
+  end
+
   def completed?
     if frame_number == 10
       if strike? || spare?
