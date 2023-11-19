@@ -5,6 +5,9 @@ require_relative '../libs/shot'
 class Frame
   attr_reader :shots, :bonus, :frame_number
 
+  ALL_PINS = 10
+  LAST_FRAME_NUMBER = 10
+
   def initialize(frame_number)
     @shots = []
     @frame_number = frame_number
@@ -15,19 +18,21 @@ class Frame
   end
 
   def comfirm_bonus(bonus)
-    @bonus = bonus if @bonus.nil?
+    @bonus = bonus if bonus_pended?
   end
 
+  # @bonusがnilということは保留中であるということを明示的にしたい
   def bonus_pended?
     @bonus.nil?
   end
 
+  # 第1フレームの1投目の直前のみshots[0]がnilとなるのでぼっち演算子で対応
   def strike?
-    @shots[0]&.score == 10
+    @shots[0]&.score == ALL_PINS
   end
 
   def spare?
-    @shots&.map(&:score)&.sum == 10 && !strike?
+    sum_each_shot == ALL_PINS && !strike?
   end
 
   def no_mark?
@@ -35,7 +40,7 @@ class Frame
   end
 
   def completed?
-    if frame_number == 10
+    if frame_number == LAST_FRAME_NUMBER
       if strike? || spare?
         @shots[2]
       else
@@ -50,7 +55,11 @@ class Frame
     if bonus_pended?
       nil
     else
-      shots.map(&:score).sum + bonus
+      sum_each_shot + bonus
     end
+  end
+
+  def sum_each_shot
+    shots.map(&:score).sum
   end
 end
