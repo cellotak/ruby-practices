@@ -59,6 +59,8 @@ class Frame
     end
   end
 
+  private
+
   def sum_each_shot
     shots.map(&:score).sum
   end
