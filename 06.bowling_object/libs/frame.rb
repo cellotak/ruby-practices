@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../libs/shot'
-require_relative '../libs/bonus'
 
 class Frame
   attr_reader :shots, :bonus, :frame_number
@@ -15,8 +14,8 @@ class Frame
     @shots << Shot.new(symbol)
   end
 
-  def comfirm_bonus(bonus_score)
-    @bonus = Bonus.new(bonus_score)
+  def comfirm_bonus(bonus)
+    @bonus = bonus if @bonus.nil?
   end
 
   def bonus_pended?
@@ -51,7 +50,7 @@ class Frame
     if bonus_pended?
       nil
     else
-      shots.map(&:score).sum + bonus.bonus_score
+      shots.map(&:score).sum + bonus
     end
   end
 end

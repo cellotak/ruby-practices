@@ -64,7 +64,7 @@ class FrameTest < Minitest::Test
   def test_bonus_score
     frame = Frame.new(1)
     frame.comfirm_bonus(10)
-    assert_equal 10, frame.bonus.bonus_score
+    assert_equal 10, frame.bonus
   end
 
   # completed?のテスト

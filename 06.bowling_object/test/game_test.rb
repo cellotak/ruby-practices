@@ -66,7 +66,7 @@ class GameTest < Minitest::Test
     game = Game.new
     game.add_shot('1')
     game.add_shot('2')
-    assert_equal 0, game.frames[0].bonus.bonus_score
+    assert_equal 0, game.frames[0].bonus
   end
 
   def test_update_bonus3
@@ -77,10 +77,10 @@ class GameTest < Minitest::Test
     game.add_shot('4')
     game.add_shot('2')
     game.add_shot('3')
-    assert_equal 16, game.frames[0].bonus.bonus_score
-    assert_equal 10, game.frames[1].bonus.bonus_score
-    assert_equal 2, game.frames[2].bonus.bonus_score
-    assert_equal 0, game.frames[3].bonus.bonus_score
+    assert_equal 16, game.frames[0].bonus
+    assert_equal 10, game.frames[1].bonus
+    assert_equal 2, game.frames[2].bonus
+    assert_equal 0, game.frames[3].bonus
   end
 
   def test_calc_game_score
