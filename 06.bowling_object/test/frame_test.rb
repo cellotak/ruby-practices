@@ -13,15 +13,15 @@ class FrameTest < Minitest::Test
   def test_add_shot_with_strike
     frame = Frame.new(1)
     frame.add_shot('X')
-    assert_equal 10, frame.shots[0].shot_score
+    assert_equal 10, frame.shots[0].score
   end
 
   def test_add_shot_with_not_strike
     frame = Frame.new(1)
     frame.add_shot('3')
     frame.add_shot('2')
-    assert_equal 3, frame.shots[0].shot_score
-    assert_equal 2, frame.shots[1].shot_score
+    assert_equal 3, frame.shots[0].score
+    assert_equal 2, frame.shots[1].score
   end
 
   # strike?やspare?のテスト

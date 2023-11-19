@@ -11,8 +11,8 @@ class Frame
     @frame_number = frame_number
   end
 
-  def add_shot(char)
-    @shots << Shot.new(char)
+  def add_shot(symbol)
+    @shots << Shot.new(symbol)
   end
 
   def comfirm_bonus(bonus_score)
@@ -24,11 +24,11 @@ class Frame
   end
 
   def strike?
-    @shots[0]&.shot_score == 10
+    @shots[0]&.score == 10
   end
 
   def spare?
-    @shots&.map(&:shot_score)&.sum == 10 && !strike?
+    @shots&.map(&:score)&.sum == 10 && !strike?
   end
 
   def no_mark?
@@ -51,7 +51,7 @@ class Frame
     if bonus_pended?
       nil
     else
-      shots.map(&:shot_score).sum + bonus.bonus_score
+      shots.map(&:score).sum + bonus.bonus_score
     end
   end
 end

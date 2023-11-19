@@ -10,11 +10,11 @@ class Game
     @frames << Frame.new(1)
   end
 
-  def add_shot(char)
+  def add_shot(symbol)
     if current_frame.completed?
       frames << Frame.new(current_frame.frame_number + 1)
     end
-    current_frame.add_shot(char)
+    current_frame.add_shot(symbol)
     update_bonus
   end
 
@@ -34,12 +34,12 @@ class Game
     current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.completed?) || current_frame.frame_number == 10
 
     if previous_frame&.bonus_pended?
-      previous_frame.comfirm_bonus(current_frame.shots.sum(&:shot_score)) if current_frame.shots.size == 2 && previous_frame.strike?
-      previous_frame.comfirm_bonus(current_frame.shots[0].shot_score) if previous_frame.spare?
+      previous_frame.comfirm_bonus(current_frame.shots.sum(&:score)) if current_frame.shots.size == 2 && previous_frame.strike?
+      previous_frame.comfirm_bonus(current_frame.shots[0].score) if previous_frame.spare?
     end
 
     if second_previous_frame&.bonus_pended?
-      second_previous_frame.comfirm_bonus(10 + current_frame.shots[0].shot_score) if previous_frame.strike?
+      second_previous_frame.comfirm_bonus(10 + current_frame.shots[0].score) if previous_frame.strike?
       second_previous_frame.comfirm_bonus(10) if previous_frame.spare?
     end
   end
@@ -49,7 +49,7 @@ class Game
     frames.each do |frame|
       one_frame = []
       frame.shots.each do |shot|
-         one_frame << shot.shot_score
+         one_frame << shot.score
       end
       all_shots << one_frame
     end
