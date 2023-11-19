@@ -11,13 +11,13 @@ class Game
   end
 
   def add_shot(symbol)
-    frames << Frame.new(current_frame.frame_number + 1) if current_frame.completed?
+    frames << Frame.new(current_frame.frame_number + 1) if current_frame.filled?
     current_frame.add_shot(symbol)
     update_bonus
   end
 
   def update_bonus
-    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.completed?) || current_frame.frame_number == 10
+    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.filled?) || current_frame.frame_number == 10
 
     if previous_frame&.bonus_pended?
       previous_frame.comfirm_bonus(current_frame.shots.sum(&:score)) if current_frame.shots.size == 2 && previous_frame.strike?

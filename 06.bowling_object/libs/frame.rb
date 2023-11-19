@@ -39,7 +39,7 @@ class Frame
     !(strike? || spare?)
   end
 
-  def completed?
+  def filled?
     if frame_number == LAST_FRAME_NUMBER
       if strike? || spare?
         @shots[2]
