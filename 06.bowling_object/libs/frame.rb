@@ -32,7 +32,7 @@ class Frame
   end
 
   def spare?
-    sum_each_shot == ALL_PINS && !strike?
+    shots_sum == ALL_PINS && !strike?
   end
 
   def no_mark?
@@ -55,13 +55,13 @@ class Frame
     if bonus_pended?
       nil
     else
-      sum_each_shot + bonus
+      shots_sum + bonus
     end
   end
 
   private
 
-  def sum_each_shot
+  def shots_sum
     shots.map(&:score).sum
   end
 end
