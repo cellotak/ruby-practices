@@ -11,23 +11,9 @@ class Game
   end
 
   def add_shot(symbol)
-    if current_frame.completed?
-      frames << Frame.new(current_frame.frame_number + 1)
-    end
+    frames << Frame.new(current_frame.frame_number + 1) if current_frame.completed?
     current_frame.add_shot(symbol)
     update_bonus
-  end
-
-  def current_frame
-    frames.last
-  end
-
-  def previous_frame
-    frames[-2]
-  end
-
-  def second_previous_frame
-    frames[-3]
   end
 
   def update_bonus
@@ -44,12 +30,24 @@ class Game
     end
   end
 
+  def current_frame
+    frames[-1]
+  end
+
+  def previous_frame
+    frames[-2]
+  end
+
+  def second_previous_frame
+    frames[-3]
+  end
+
   def check_all_shot
     all_shots = []
     frames.each do |frame|
       one_frame = []
       frame.shots.each do |shot|
-         one_frame << shot.score
+        one_frame << shot.score
       end
       all_shots << one_frame
     end
