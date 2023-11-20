@@ -37,7 +37,7 @@ class GameTest < Minitest::Test
     6.times do
       game.add_shot('1')
     end
-    assert_equal 3, game.current_frame.frame_number
+    assert_equal 4, game.current_frame.frame_number
   end
 
   def test_previous_frame
@@ -45,7 +45,7 @@ class GameTest < Minitest::Test
     6.times do
       game.add_shot('1')
     end
-    assert_equal 2, game.previous_frame.frame_number
+    assert_equal 3, game.previous_frame.frame_number
   end
 
   def test_second_previous_frame
@@ -53,7 +53,7 @@ class GameTest < Minitest::Test
     6.times do
       game.add_shot('1')
     end
-    assert_equal 1, game.second_previous_frame.frame_number
+    assert_equal 2, game.second_previous_frame.frame_number
   end
 
   def test_update_bonus1
