@@ -19,12 +19,6 @@ class Game
     create_next_frame if current_frame.filled? && current_frame.frame_number != LAST_FRAME_NUMBER
   end
 
-  def update_bonus
-    update_current_frame_bonus
-    update_previous_frame_bonus if previous_frame&.bonus_pended?
-    update_second_previous_frame_bonus if second_previous_frame&.bonus_pended?
-  end
-
   def current_frame
     frames[-1]
   end
@@ -45,6 +39,12 @@ class Game
 
   def create_next_frame
     frames << Frame.new(current_frame.frame_number + 1)
+  end
+
+  def update_bonus
+    update_current_frame_bonus
+    update_previous_frame_bonus if previous_frame&.bonus_pended?
+    update_second_previous_frame_bonus if second_previous_frame&.bonus_pended?
   end
 
   def update_current_frame_bonus
