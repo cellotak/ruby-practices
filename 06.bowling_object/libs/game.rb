@@ -45,30 +45,6 @@ class Game
     frames[-3]
   end
 
-  def check_all_shot
-    all_shots = []
-    frames.each do |frame|
-      one_frame = []
-      frame.shots.each do |shot|
-        one_frame << shot.score
-      end
-      all_shots << one_frame
-    end
-    all_shots
-  end
-
-  def check_all_frame_score
-    all_frame_score = []
-    frames.each do |frame|
-      if frame.frame_score.nil?
-        all_frame_score << "#{frame.frame_number}:hoge"
-      else
-        all_frame_score << "#{frame.frame_number} : #{frame.frame_score}"
-      end
-    end
-    all_frame_score
-  end
-
   def calc_game_score
     game_score = frames.sum do |frame|
       frame.frame_score
