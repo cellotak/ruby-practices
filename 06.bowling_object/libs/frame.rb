@@ -32,18 +32,24 @@ class Frame
   end
 
   def spare?
-    shots_sum == ALL_PINS && !strike?
+    return false if @shots.size < 2
+
+    @shots[0].score + @shots[1].score == ALL_PINS && !strike?
+  end
+
+  def mark?
+    strike? || spare?
   end
 
   def no_mark?
-    !(strike? || spare?)
+    !mark?
   end
 
   def filled?
     if frame_number == LAST_FRAME_NUMBER
-      (strike? || spare?) ? @shots[2] : @shots[1]
+      mark? ? @shots.size == 3 : @shots.size == 2
     else
-      strike? || @shots[1]
+      strike? || @shots.size == 2
     end
   end
 
