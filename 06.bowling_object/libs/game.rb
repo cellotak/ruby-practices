@@ -37,7 +37,7 @@ class Game
     frames[-3]
   end
 
-  def calc_game_score
+  def total_score
     frames.sum(&:frame_score)
   end
 

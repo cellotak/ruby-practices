@@ -9,4 +9,4 @@ shot_symbols.each do |shot_symbol|
   game.add_shot(shot_symbol)
 end
 
-puts game.calc_game_score
+puts game.total_score

@@ -83,105 +83,73 @@ class GameTest < Minitest::Test
     assert_equal 0, game.frames[3].bonus
   end
 
-  def test_calc_game_score
+  def test_total_score
     game = Game.new
     shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,X,X,6,4,5'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 159, game.calc_game_score
+    assert_equal 159, game.total_score
   end
 
-  def test_calc_game_score2
+  def test_total_score2
     game = Game.new
     shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,X,X'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 164, game.calc_game_score
+    assert_equal 164, game.total_score
   end
 
-  def test_calc_game_score3
+  def test_total_score3
     game = Game.new
     shot_data = '0,10,1,5,0,0,0,0,X,X,X,5,1,8,1,0,4'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 107, game.calc_game_score
+    assert_equal 107, game.total_score
   end
 
-  def test_calc_game_score4
+  def test_total_score4
     game = Game.new
     shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,0,0'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 134, game.calc_game_score
+    assert_equal 134, game.total_score
   end
 
-  def test_calc_game_score5
+  def test_total_score5
     game = Game.new
     shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,1,8'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 144, game.calc_game_score
+    assert_equal 144, game.total_score
   end
 
-  def test_calc_game_score6
+  def test_total_score6
     game = Game.new
     shot_data = 'X,X,X,X,X,X,X,X,X,X,X,X'
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 300, game.calc_game_score
+    assert_equal 300, game.total_score
   end
 
-  def test_calc_game_score7
+  def test_total_score7
     game = Game.new
     shot_data = 'X,0,0,X,0,0,X,0,0,X,0,0,X,0,0 '
     shot_symbols = shot_data.split(',')
     shot_symbols.each do |shot_symbol|
       game.add_shot(shot_symbol)
     end
-    assert_equal 50, game.calc_game_score
+    assert_equal 50, game.total_score
   end
-
-
-  # def test_check_all_shot
-  #   game = Game.new
-  #   shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,X,X'
-  #   shot_symbols = shot_data.split(',')
-  #   shot_symbols.each do |shot_symbol|
-  #     game.add_shot(shot_symbol)
-  #   end
-  #   p  game.check_all_shot
-  # end
-
-  # def test_check_all_frame_score
-  #   game = Game.new
-  #   shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,X,X'
-  #   shot_symbols = shot_data.split(',')
-  #   shot_symbols.each do |shot_symbol|
-  #     game.add_shot(shot_symbol)
-  #   end
-  #   p  game.check_all_frame_score
-  # end
-
-  # def test_check_all_frame_score_2
-  #   game = Game.new
-  #   shot_data = '6,3,9,0,0,3,8,2,7,3,X,9,1,X,X,6,4,5'
-  #   shot_symbols = shot_data.split(',')
-  #   shot_symbols.each do |shot_symbol|
-  #     game.add_shot(shot_symbol)
-  #   end
-  #   p  game.check_all_frame_score
-  # end
-
 end
