@@ -51,8 +51,6 @@ class Frame
     bonus_pended? ? nil : shots_sum + bonus
   end
 
-  private
-
   def shots_sum
     shots.map(&:score).sum
   end
