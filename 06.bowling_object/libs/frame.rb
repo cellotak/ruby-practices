@@ -41,11 +41,7 @@ class Frame
 
   def filled?
     if frame_number == LAST_FRAME_NUMBER
-      if strike? || spare?
-        @shots[2]
-      else
-        @shots[1]
-      end
+      (strike? || spare?) ? @shots[2] : @shots[1]
     else
       strike? || @shots[1]
     end

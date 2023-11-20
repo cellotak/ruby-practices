@@ -77,7 +77,7 @@ class FrameTest < Minitest::Test
   end
 
   # 2投してストライクでもスペアでもないとき => true
-  def test_last_frame_completed_without_strike_or_spare
+  def test_last_frame_filled_without_strike_or_spare
     frame = Frame.new(10)
     frame.add_shot('1')
     frame.add_shot('2')
@@ -85,14 +85,14 @@ class FrameTest < Minitest::Test
   end
 
   # 1投してストライクのとき => false
-  def test_last_frame_not_completed_with_strike
+  def test_last_frame_not_filled_with_strike
     frame = Frame.new(10)
     frame.add_shot('X')
     refute frame.filled?
   end
 
   # 1投目がストライクで2投した時 => false
-  def test_last_frame_not_completed_with_strike_and_one_shot
+  def test_last_frame_not_filled_with_strike_and_one_shot
     frame = Frame.new(10)
     frame.add_shot('X')
     frame.add_shot('1')
@@ -100,7 +100,7 @@ class FrameTest < Minitest::Test
   end
 
   # 1投目がストライクで3投した時 => true
-  def test_last_frame_completed_with_strike_and_two_shot
+  def test_last_frame_filled_with_strike_and_two_shot
     frame = Frame.new(10)
     frame.add_shot('X')
     frame.add_shot('X')
@@ -109,7 +109,7 @@ class FrameTest < Minitest::Test
   end
 
   # 2投してスペアの時 => false
-  def test_last_frame_not_completed_with_spare
+  def test_last_frame_not_filled_with_spare
     frame = Frame.new(10)
     frame.add_shot('6')
     frame.add_shot('4')
@@ -117,7 +117,7 @@ class FrameTest < Minitest::Test
   end
 
   # 2投してスペアでさらに1投した時 => true
-  def test_last_frame_completed_with_spare_and_one_shot
+  def test_last_frame_filled_with_spare_and_one_shot
     frame = Frame.new(10)
     frame.add_shot('6')
     frame.add_shot('4')
@@ -127,7 +127,7 @@ class FrameTest < Minitest::Test
 
   # 1～9frame
   # 1投だけして、ストライク出ないとき => false
-  def test_frame_not_completed_with_one_shot
+  def test_frame_not_filled_with_one_shot
     frame = Frame.new(1)
     frame.add_shot('1')
     refute frame.filled?
