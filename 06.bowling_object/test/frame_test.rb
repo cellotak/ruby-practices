@@ -4,18 +4,23 @@ require 'minitest/autorun'
 require_relative '../libs/frame'
 
 class FrameTest < Minitest::Test
-  def test_frame_new
+  # initializeで@shots,@frame_nunber,@bonusが正しく初期化されているか
+  def test_frame_initialize
     frame = Frame.new(1)
     assert_equal [], frame.shots
+    assert_nil frame.bonus
     assert_equal 1, frame.frame_number
   end
 
+  # add_shotのテスト
+  # ストライクをadd_shotしたとき
   def test_add_shot_with_strike
     frame = Frame.new(1)
     frame.add_shot('X')
     assert_equal 10, frame.shots[0].score
   end
 
+  # ストライクでないスコアをadd_shotしたとき
   def test_add_shot_with_not_strike
     frame = Frame.new(1)
     frame.add_shot('3')
@@ -24,44 +29,55 @@ class FrameTest < Minitest::Test
     assert_equal 2, frame.shots[1].score
   end
 
-  # strike?やspare?のテスト
-  # ストライクの時 strike?はtrue,spare?はfalse
-  def test_strike
+  # strike?、spare?、mark?、no_mark?のテスト
+  # ストライクの時
+  def test_strike_spare_mark_no_mark_with_strike
     frame = Frame.new(1)
     frame.add_shot('X')
     assert frame.strike?
     refute frame.spare?
+    assert frame.mark?
+    refute frame.no_mark?
   end
 
-  def test_not_strike_and_spare_with_second_shot_is_x
+  # スペアの時
+  def test_strike_spare_mark_no_mark_with_spare
     frame = Frame.new(1)
     frame.add_shot('0')
     frame.add_shot('X')
     refute frame.strike?
     assert frame.spare?
+    assert frame.mark?
+    refute frame.no_mark?
   end
 
-  def test_not_strike_and_not_spare
+  # ストライクでもスペアでもない(markでない)時
+  def test_strike_spare_mark_no_mark_without_mark
     frame = Frame.new(1)
     frame.add_shot('1')
     frame.add_shot('2')
     refute frame.strike?
     refute frame.spare?
+    refute frame.mark?
+    assert frame.no_mark?
   end
 
-  # ボーナスについてのテスト
+  # bonus_pended?についてのテスト
+  # ボーナスが保留中
   def test_bonus_pended?
     frame = Frame.new(1)
     assert frame.bonus_pended?
   end
 
+  # ボーナス確定済み
   def test_bonus_not_pended?
     frame = Frame.new(1)
     frame.comfirm_bonus(10)
     refute frame.bonus_pended?
   end
 
-  def test_bonus_score
+  # bonus_scoreのテスト
+  def test_bonus_score_when_bonus_is_ten
     frame = Frame.new(1)
     frame.comfirm_bonus(10)
     assert_equal 10, frame.bonus
@@ -70,54 +86,54 @@ class FrameTest < Minitest::Test
   # filled?のテスト
   # last_frameの時
   # 1投してストライクではないとき => false
-  def test_last_frame_not_filled_with_one_shot
+  def test_filled_when_last_frame_not_filled_with_one_shot
     frame = Frame.new(10)
     frame.add_shot('1')
     refute frame.filled?
-  end
-
-  # 2投してストライクでもスペアでもないとき => true
-  def test_last_frame_filled_without_strike_or_spare
-    frame = Frame.new(10)
-    frame.add_shot('1')
-    frame.add_shot('2')
-    assert frame.filled?
   end
 
   # 1投してストライクのとき => false
-  def test_last_frame_not_filled_with_strike
+  def test_filled_when_last_frame_not_filled_with_strike
     frame = Frame.new(10)
     frame.add_shot('X')
     refute frame.filled?
   end
 
-  # 1投目がストライクで2投した時 => false
-  def test_last_frame_not_filled_with_strike_and_one_shot
+  # 2投して1投目ストライクの時 => false
+  def test_filled_when_last_frame_not_filled_with_strike_and_one_shot
     frame = Frame.new(10)
     frame.add_shot('X')
     frame.add_shot('1')
     refute frame.filled?
   end
 
-  # 1投目がストライクで3投した時 => true
-  def test_last_frame_filled_with_strike_and_two_shot
-    frame = Frame.new(10)
-    frame.add_shot('X')
-    frame.add_shot('X')
-    frame.add_shot('X')
-    assert frame.filled?
-  end
-
   # 2投してスペアの時 => false
-  def test_last_frame_not_filled_with_spare
+  def test_filled_when_last_frame_not_filled_with_spare
     frame = Frame.new(10)
     frame.add_shot('6')
     frame.add_shot('4')
     refute frame.filled?
   end
 
-  # 2投してスペアでさらに1投した時 => true
-  def test_last_frame_filled_with_spare_and_one_shot
+  # 2投してストライクでもスペアでもないとき => true
+  def test_filled_when_last_frame_filled_with_two_shot
+    frame = Frame.new(10)
+    frame.add_shot('1')
+    frame.add_shot('2')
+    assert frame.filled?
+  end
+
+  # 3投して1投目がストライクの時 => true
+  def test_filled_when_last_frame_filled_with_strike_and_two_shot
+    frame = Frame.new(10)
+    frame.add_shot('X')
+    frame.add_shot('X')
+    frame.add_shot('X')
+    assert frame.filled?
+  end
+
+  # 3投して1,2投目がスペアの時 => true
+  def test_filled_when_last_frame_filled_with_spare_and_one_shot
     frame = Frame.new(10)
     frame.add_shot('6')
     frame.add_shot('4')
@@ -126,36 +142,37 @@ class FrameTest < Minitest::Test
   end
 
   # 1～9frame
-  # 1投だけして、ストライク出ないとき => false
-  def test_frame_not_filled_with_one_shot
+  # 1投して、ストライクではないとき => false
+  def test_filled_when_frame_not_filled_with_one_shot
     frame = Frame.new(1)
     frame.add_shot('1')
     refute frame.filled?
   end
 
-  # 2投してスペアでないとき
-  def test_frame_complete_with_two_shot_and_not_spare
+  # 1投してストライクのとき => true
+  def test_filled_when_frame_filled_with_strike
+    frame = Frame.new(1)
+    frame.add_shot('X')
+    assert frame.filled?
+  end
+
+  # 2投してスペアではないとき => true
+  def test_filled_when_frame_filled_with_two_shot_and_not_spare
     frame = Frame.new(1)
     frame.add_shot('1')
     frame.add_shot('2')
     assert frame.filled?
   end
 
-  # 2投してスペアのとき
-  def test_frame_complete_with_two_shot_and_spare
+  # 2投してスペアのとき => true
+  def test_filled_when_frame_filled_with_two_shot_and_spare
     frame = Frame.new(1)
     frame.add_shot('6')
     frame.add_shot('4')
     assert frame.filled?
   end
 
-  # 1投してストライクのとき
-  def test_frame_complete_with_strike
-    frame = Frame.new(1)
-    frame.add_shot('X')
-    assert frame.filled?
-  end
-
+  # frame_scoreのテスト
   def test_frame_score_with_bonus
     frame = Frame.new(1)
     frame.add_shot('6')
@@ -169,25 +186,5 @@ class FrameTest < Minitest::Test
     frame.add_shot('6')
     frame.add_shot('4')
     assert_nil frame.frame_score
-  end
-
-  def test_no_mark_with_no_mark
-    frame = Frame.new(1)
-    frame.add_shot('1')
-    frame.add_shot('2')
-    assert frame.no_mark?
-  end
-
-  def test_no_mark_with_strike
-    frame = Frame.new(1)
-    frame.add_shot('X')
-    refute frame.no_mark?
-  end
-
-  def test_no_mark_with_spare
-    frame = Frame.new(1)
-    frame.add_shot('6')
-    frame.add_shot('4')
-    refute frame.no_mark?
   end
 end
