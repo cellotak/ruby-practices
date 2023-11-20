@@ -20,17 +20,9 @@ class Game
   end
 
   def update_bonus
-    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.filled?) || current_frame.frame_number == LAST_FRAME_NUMBER
-
-    if previous_frame&.bonus_pended?
-      previous_frame.comfirm_bonus(current_frame.shots.sum(&:score)) if current_frame.shots.size == 2 && previous_frame.strike?
-      previous_frame.comfirm_bonus(current_frame.shots[0].score) if previous_frame.spare?
-    end
-
-    if second_previous_frame&.bonus_pended?
-      second_previous_frame.comfirm_bonus(ALL_PINS + current_frame.shots[0].score) if previous_frame.strike?
-      second_previous_frame.comfirm_bonus(ALL_PINS) if previous_frame.spare?
-    end
+    update_current_frame_bonus
+    update_previous_frame_bonus if previous_frame&.bonus_pended?
+    update_second_previous_frame_bonus if second_previous_frame&.bonus_pended?
   end
 
   def current_frame
@@ -46,15 +38,26 @@ class Game
   end
 
   def calc_game_score
-    game_score = frames.sum do |frame|
-      frame.frame_score
-    end
-    game_score
+    frames.sum(&:frame_score)
   end
 
   private
 
   def create_next_frame
     frames << Frame.new(current_frame.frame_number + 1)
+  end
+
+  def update_current_frame_bonus
+    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.filled?) || current_frame.frame_number == LAST_FRAME_NUMBER
+  end
+
+  def update_previous_frame_bonus
+    previous_frame.comfirm_bonus(current_frame.shots_sum) if previous_frame.strike? && current_frame.shots.size == 2
+    previous_frame.comfirm_bonus(current_frame.shots[0].score) if previous_frame.spare?
+  end
+
+  def update_second_previous_frame_bonus
+    second_previous_frame.comfirm_bonus(ALL_PINS + current_frame.shots[0].score) if previous_frame.strike?
+    second_previous_frame.comfirm_bonus(ALL_PINS) if previous_frame.spare?
   end
 end
