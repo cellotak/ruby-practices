@@ -32,7 +32,7 @@ class Game
   end
 
   def total_score
-    frames.sum(&:frame_score)
+    frames.sum(&:score)
   end
 
   private

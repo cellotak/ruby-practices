@@ -172,19 +172,19 @@ class FrameTest < Minitest::Test
     assert frame.filled?
   end
 
-  # frame_scoreのテスト
-  def test_frame_score_with_bonus
+  # scoreのテスト
+  def test_score_with_bonus
     frame = Frame.new(1)
     frame.add_shot('6')
     frame.add_shot('4')
     frame.comfirm_bonus(3)
-    assert_equal 13, frame.frame_score
+    assert_equal 13, frame.score
   end
 
-  def test_frame_score_without_bonus
+  def test_score_without_bonus
     frame = Frame.new(1)
     frame.add_shot('6')
     frame.add_shot('4')
-    assert_nil frame.frame_score
+    assert_nil frame.score
   end
 end

@@ -53,7 +53,7 @@ class Frame
     end
   end
 
-  def frame_score
+  def score
     bonus_pended? ? nil : shots_sum + bonus
   end
 
