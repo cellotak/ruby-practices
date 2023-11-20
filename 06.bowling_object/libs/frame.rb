@@ -48,11 +48,7 @@ class Frame
   end
 
   def frame_score
-    if bonus_pended?
-      nil
-    else
-      shots_sum + bonus
-    end
+    bonus_pended? ? nil : shots_sum + bonus
   end
 
   private
