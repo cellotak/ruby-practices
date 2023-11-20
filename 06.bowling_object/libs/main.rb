@@ -3,10 +3,10 @@
 require_relative './game'
 
 game = Game.new
-shot_symbols = ARGV[0].split(',')
+symbols = ARGV[0].split(',')
 
-shot_symbols.each do |shot_symbol|
-  game.add_shot(shot_symbol)
+symbols.each do |symbol|
+  game.add_shot(symbol)
 end
 
 puts game.total_score
