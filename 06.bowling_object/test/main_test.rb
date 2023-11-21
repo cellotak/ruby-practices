@@ -3,7 +3,6 @@
 require 'minitest/autorun'
 
 class MainTest < Minitest::Test
-
   def test_main
     ARGV.replace(['6,3,9,0,0,3,8,2,7,3,X,9,1,8,0,X,X,X,X'])
     $stdout = StringIO.new
