@@ -12,11 +12,16 @@ DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime].freeze
 RJUST_LIST = %i[nlink size].freeze
 
 def main
-  options, directory_paths = parse_options(ARGV)
+  options, paths = parse_options(ARGV)
   # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
-  directory_path = directory_paths[0] || './'
-  file_names = fetch_file_names(directory_path, options)
-  output(file_names, directory_path, options)
+  path = paths[0] || './'
+  if File.file?(path)
+    puts path
+  elsif File.directory?(path)
+    directory_path = path
+    file_names = fetch_file_names(directory_path, options)
+    output(file_names, directory_path, options)
+  end
 end
 
 def parse_options(argv)
