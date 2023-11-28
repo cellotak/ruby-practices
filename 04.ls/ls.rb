@@ -14,22 +14,29 @@ RJUST_LIST = %i[nlink size].freeze
 def main
   options, paths = parse_options(ARGV)
   # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
-  path = paths[0] || './'
-  # if File.file?(path)
-  #   puts path
-  # elsif File.directory?(path)
-  #   directory_path = path
-  #   file_names = fetch_file_names(directory_path, options)
-  #   output(file_names, directory_path, options)
-  # end
-  if File.directory?(path)
-    directory_path = path
+
+  paths << './' if paths.empty?
+
+  directory_paths = []
+  file_paths = []
+
+  paths.each do |path|
+    if File.directory?(path)
+      directory_paths << path
+    elsif File.file?(path)
+      file_paths << path
+    end
+  end
+
+  file_name_specified_output(file_paths, options)
+
+  directory_paths.each do |directory_path|
+    if paths.size >= 2
+      puts ""
+      puts "#{directory_path}:"
+    end
     file_names = fetch_file_names(directory_path, options)
     output(file_names, directory_path, options)
-  elsif File.file?(path)
-    file_names = [File.basename(path)]
-    directory_path = File.dirname(path)
-    file_name_specified_output(file_names, directory_path, options)
   end
 end
 
@@ -168,15 +175,21 @@ def ljust_include_multibyte_characters(ljust_target, width)
   ljust_target.ljust(adjusted_width)
 end
 
-def file_name_specified_output(file_names, directory_path, options)
-  file_name = file_names[0]
+def file_name_specified_output(file_paths, options)
   if options[:l]
-    details_by_file_name = build_details_by_file_name(file_names, directory_path)
-    DETAILS_OUTPUT_ORDER.each do |key|
-      print "#{details_by_file_name[file_name][key]} "
+    file_paths.each do |file_path|
+      file_name = File.basename(file_path)
+      directory_path = File.dirname(file_path)
+      stat = File.stat("#{directory_path}/#{file_name}")
+      details = convert_stat_to_details(stat)
+      DETAILS_OUTPUT_ORDER.each do |key|
+        print "#{details[key]} "
+      end
+      print "#{file_path}\n"
     end
+  else
+    output_default_format(file_paths)
   end
-  puts "#{directory_path}/#{file_name}"
 end
 
 main
