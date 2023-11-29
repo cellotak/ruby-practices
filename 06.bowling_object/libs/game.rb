@@ -5,9 +5,6 @@ require_relative '../libs/frame'
 class Game
   attr_reader :frames
 
-  ALL_PINS = 10
-  LAST_FRAME_NUMBER = 10
-
   def initialize
     @frames = []
     @frames << Frame.new(1)
@@ -16,7 +13,7 @@ class Game
   def add_shot(symbol)
     current_frame.add_shot(symbol)
     update_bonus
-    create_next_frame if current_frame.filled? && current_frame.frame_number != LAST_FRAME_NUMBER
+    create_next_frame if current_frame.filled? && current_frame.frame_number != Frame::LAST_FRAME_NUMBER
   end
 
   def current_frame
@@ -48,7 +45,7 @@ class Game
   end
 
   def update_current_frame_bonus
-    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.filled?) || current_frame.frame_number == LAST_FRAME_NUMBER
+    current_frame.comfirm_bonus(0) if (current_frame.no_mark? && current_frame.filled?) || current_frame.frame_number == Frame::LAST_FRAME_NUMBER
   end
 
   def update_previous_frame_bonus
@@ -57,7 +54,7 @@ class Game
   end
 
   def update_second_previous_frame_bonus
-    second_previous_frame.comfirm_bonus(ALL_PINS + current_frame.shots[0].score) if previous_frame.strike?
-    second_previous_frame.comfirm_bonus(ALL_PINS) if previous_frame.spare?
+    second_previous_frame.comfirm_bonus(Shot::ALL_PINS + current_frame.shots[0].score) if previous_frame.strike?
+    second_previous_frame.comfirm_bonus(Shot::ALL_PINS) if previous_frame.spare?
   end
 end

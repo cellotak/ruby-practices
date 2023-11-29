@@ -5,7 +5,6 @@ require_relative '../libs/shot'
 class Frame
   attr_reader :shots, :bonus, :frame_number
 
-  ALL_PINS = 10
   LAST_FRAME_NUMBER = 10
 
   def initialize(frame_number)
@@ -28,13 +27,13 @@ class Frame
 
   # 第1フレームの1投目の直前のみshots[0]がnilとなるのでぼっち演算子で対応
   def strike?
-    @shots[0]&.score == ALL_PINS
+    @shots[0]&.score == Shot::ALL_PINS
   end
 
   def spare?
     return false if @shots.size < 2
 
-    @shots[0].score + @shots[1].score == ALL_PINS && !strike?
+    @shots[0].score + @shots[1].score == Shot::ALL_PINS && !strike?
   end
 
   def mark?
