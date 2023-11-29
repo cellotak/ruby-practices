@@ -45,8 +45,10 @@ class Frame
   end
 
   def filled?
+    return true if @shots.size == 3
+
     if frame_number == LAST_FRAME_NUMBER
-      @shots.size == 3 || (no_mark? && @shots.size == 2)
+      no_mark? && @shots.size == 2
     else
       strike? || @shots.size == 2
     end
