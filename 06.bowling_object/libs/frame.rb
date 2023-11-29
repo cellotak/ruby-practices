@@ -17,11 +17,11 @@ class Frame
   end
 
   def confirm_bonus(bonus)
-    @bonus = bonus if bonus_pended?
+    @bonus = bonus if bonus_pending?
   end
 
   # @bonusがnilということは保留中であるということを明示的にしたい
-  def bonus_pended?
+  def bonus_pending?
     @bonus.nil?
   end
 
@@ -53,7 +53,7 @@ class Frame
   end
 
   def score
-    bonus_pended? ? nil : shots_sum + bonus
+    bonus_pending? ? nil : shots_sum + bonus
   end
 
   def shots_sum

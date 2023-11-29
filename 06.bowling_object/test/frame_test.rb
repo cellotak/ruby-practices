@@ -62,18 +62,18 @@ class FrameTest < Minitest::Test
     assert frame.no_mark?
   end
 
-  # bonus_pended?についてのテスト
+  # bonus_pending?についてのテスト
   # ボーナスが保留中
-  def test_bonus_pended?
+  def test_bonus_pending?
     frame = Frame.new(1)
-    assert frame.bonus_pended?
+    assert frame.bonus_pending?
   end
 
   # ボーナス確定済み
-  def test_bonus_not_pended?
+  def test_bonus_not_pending?
     frame = Frame.new(1)
     frame.confirm_bonus(10)
-    refute frame.bonus_pended?
+    refute frame.bonus_pending?
   end
 
   # bonus_scoreのテスト

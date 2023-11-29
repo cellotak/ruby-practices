@@ -40,8 +40,8 @@ class Game
 
   def update_bonus
     update_current_frame_bonus
-    update_previous_frame_bonus if previous_frame&.bonus_pended?
-    update_second_previous_frame_bonus if second_previous_frame&.bonus_pended?
+    update_previous_frame_bonus if previous_frame&.bonus_pending?
+    update_second_previous_frame_bonus if second_previous_frame&.bonus_pending?
   end
 
   def update_current_frame_bonus
