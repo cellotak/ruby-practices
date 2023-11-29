@@ -36,12 +36,8 @@ class Frame
     @shots[0].score + @shots[1].score == Shot::ALL_PINS && !strike?
   end
 
-  def mark?
-    strike? || spare?
-  end
-
   def no_mark?
-    !mark?
+    !(strike? || spare?)
   end
 
   def filled?

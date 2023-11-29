@@ -36,7 +36,6 @@ class FrameTest < Minitest::Test
     frame.add_shot('X')
     assert frame.strike?
     refute frame.spare?
-    assert frame.mark?
     refute frame.no_mark?
   end
 
@@ -47,7 +46,6 @@ class FrameTest < Minitest::Test
     frame.add_shot('X')
     refute frame.strike?
     assert frame.spare?
-    assert frame.mark?
     refute frame.no_mark?
   end
 
@@ -58,7 +56,6 @@ class FrameTest < Minitest::Test
     frame.add_shot('2')
     refute frame.strike?
     refute frame.spare?
-    refute frame.mark?
     assert frame.no_mark?
   end
 
