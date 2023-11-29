@@ -46,7 +46,7 @@ class Frame
 
   def filled?
     if frame_number == LAST_FRAME_NUMBER
-      shots.size == 3 || (no_mark? && shots.size == 2)
+      @shots.size == 3 || (no_mark? && @shots.size == 2)
     else
       strike? || @shots.size == 2
     end
@@ -57,6 +57,6 @@ class Frame
   end
 
   def shots_sum
-    shots.map(&:score).sum
+    @shots.map(&:score).sum
   end
 end

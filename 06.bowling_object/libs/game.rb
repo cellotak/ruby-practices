@@ -17,25 +17,25 @@ class Game
   end
 
   def current_frame
-    frames[-1]
+    @frames[-1]
   end
 
   def previous_frame
-    frames[-2]
+    @frames[-2]
   end
 
   def second_previous_frame
-    frames[-3]
+    @frames[-3]
   end
 
   def total_score
-    frames.sum(&:score)
+    @frames.sum(&:score)
   end
 
   private
 
   def create_next_frame
-    frames << Frame.new(current_frame.frame_number + 1)
+    @frames << Frame.new(current_frame.frame_number + 1)
   end
 
   def update_bonus
