@@ -55,10 +55,10 @@ class Frame
   end
 
   def score
-    bonus_pending? ? nil : shots_sum + bonus
+    bonus_pending? ? nil : shots_score_sum + bonus
   end
 
-  def shots_sum
-    @shots.map(&:score).sum
+  def shots_score_sum
+    @shots.sum(&:score)
   end
 end

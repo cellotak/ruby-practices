@@ -49,7 +49,7 @@ class Game
   end
 
   def update_previous_frame_bonus
-    previous_frame.confirm_bonus(current_frame.shots_sum) if previous_frame.strike? && current_frame.shots.size == 2
+    previous_frame.confirm_bonus(current_frame.shots_score_sum) if previous_frame.strike? && current_frame.shots.size == 2
     previous_frame.confirm_bonus(current_frame.shots[0].score) if previous_frame.spare?
   end
 
