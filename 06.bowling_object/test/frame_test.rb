@@ -72,14 +72,14 @@ class FrameTest < Minitest::Test
   # ボーナス確定済み
   def test_bonus_not_pended?
     frame = Frame.new(1)
-    frame.comfirm_bonus(10)
+    frame.confirm_bonus(10)
     refute frame.bonus_pended?
   end
 
   # bonus_scoreのテスト
   def test_bonus_score_when_bonus_is_ten
     frame = Frame.new(1)
-    frame.comfirm_bonus(10)
+    frame.confirm_bonus(10)
     assert_equal 10, frame.bonus
   end
 
@@ -177,7 +177,7 @@ class FrameTest < Minitest::Test
     frame = Frame.new(1)
     frame.add_shot('6')
     frame.add_shot('4')
-    frame.comfirm_bonus(3)
+    frame.confirm_bonus(3)
     assert_equal 13, frame.score
   end
 

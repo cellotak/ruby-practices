@@ -16,7 +16,7 @@ class Frame
     @shots << Shot.new(symbol)
   end
 
-  def comfirm_bonus(bonus)
+  def confirm_bonus(bonus)
     @bonus = bonus if bonus_pended?
   end
 
