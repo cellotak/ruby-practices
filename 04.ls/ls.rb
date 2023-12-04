@@ -7,9 +7,9 @@ require 'etc'
 MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
-FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime].freeze
-RJUST_LIST = %i[nlink size].freeze
+FILE_TYPES = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
+DETAILS_KEYS = %i[stat_mode nlink username groupname size ctime].freeze
+RJUST_KEYS = %i[nlink size].freeze
 
 def main
   options, paths = parse_options(ARGV)
@@ -62,8 +62,8 @@ def output_long_listing_format(file_names, directory_path)
   file_names.each do |file_name|
     details = details_by_file_name[file_name]
 
-    DETAILS_OUTPUT_ORDER.each do |key|
-      if RJUST_LIST.include?(key)
+    DETAILS_KEYS.each do |key|
+      if RJUST_KEYS.include?(key)
         print details[key].rjust(max_width_by_detail[key])
       else
         print details[key].ljust(max_width_by_detail[key])
@@ -102,7 +102,7 @@ end
 
 def convert_stat_mode_to_str(stat_mode)
   file_type_code = format('%06o', stat_mode).slice(0..1)
-  file_type_char = FILE_TYPE_LIST[file_type_code]
+  file_type_char = FILE_TYPES[file_type_code]
 
   permission_code = format('%06o', stat_mode).slice(3..5)
   permission_str = convert_permission_code_to_str(permission_code)
@@ -125,7 +125,7 @@ def convert_permission_code_to_str(permission_code)
 end
 
 def calc_max_width_by_detail(details_by_file_name)
-  DETAILS_OUTPUT_ORDER.to_h do |key|
+  DETAILS_KEYS.to_h do |key|
     widths_by_detail = details_by_file_name.map { |_file_name, details| calc_actual_length(details[key]) }
     [key, widths_by_detail.max]
   end
@@ -165,7 +165,7 @@ def file_name_specified_output(file_path, options)
     stat = File.stat(file_path)
     details = convert_stat_to_details(stat)
 
-    DETAILS_OUTPUT_ORDER.each do |key|
+    DETAILS_KEYS.each do |key|
       print "#{details[key]} "
     end
   end
