@@ -58,11 +58,9 @@ def output_long_listing_format(file_names, directory_path)
 
   details_by_file_name.each do |file_name, details|
     DETAILS_KEYS.each do |key, align|
-      if align == :right
-        print details[key].rjust(max_width_by_detail[key])
-      else
-        print details[key].ljust(max_width_by_detail[key])
-      end
+      value = details[key]
+      width = max_width_by_detail[key]
+      print(align == :right ? value.rjust(width) : value.ljust(width))
       print ' '
     end
     puts file_name
