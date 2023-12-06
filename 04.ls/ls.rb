@@ -51,9 +51,9 @@ def output(file_names, directory_path, options)
 end
 
 def output_long_listing_format(file_names, directory_path)
-  puts "total #{calc_block_count_total(file_names, directory_path)}"
-
   details_by_file_name = build_details_by_file_name(file_names, directory_path)
+
+  puts "total #{calc_block_count_total(details_by_file_name)}"
 
   max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
 
@@ -70,10 +70,9 @@ def output_long_listing_format(file_names, directory_path)
   end
 end
 
-def calc_block_count_total(file_names, directory_path)
-  file_names.sum do |file_name|
-    file_path = "#{directory_path}/#{file_name}"
-    File.stat(file_path).blocks
+def calc_block_count_total(details_by_file_name)
+  details_by_file_name.sum do |file_name, details|
+    details[:blocks]
   end
 end
 
@@ -92,7 +91,8 @@ def convert_stat_to_details(stat)
     username: Etc.getpwuid(stat.uid).name,
     groupname: Etc.getgrgid(stat.gid).name,
     size: stat.size.to_s,
-    ctime: stat.ctime.strftime('%b %e %H:%M')
+    ctime: stat.ctime.strftime('%b %e %H:%M'),
+    blocks: stat.blocks 
   }
 end
 
