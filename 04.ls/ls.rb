@@ -8,8 +8,7 @@ MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
 FILE_TYPES = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_KEYS = %i[stat_mode nlink username groupname size ctime].freeze
-RJUST_KEYS = %i[nlink size].freeze
+DETAILS_KEYS = {stat_mode: :left, nlink: :right , username: :left, groupname: :left, size: :right, ctime: :left}.freeze
 
 def main
   options, paths = parse_options(ARGV)
@@ -58,8 +57,8 @@ def output_long_listing_format(file_names, directory_path)
   max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
 
   details_by_file_name.each do |file_name, details|
-    DETAILS_KEYS.each do |key|
-      if RJUST_KEYS.include?(key)
+    DETAILS_KEYS.each do |key, align|
+      if align == :right
         print details[key].rjust(max_width_by_detail[key])
       else
         print details[key].ljust(max_width_by_detail[key])
