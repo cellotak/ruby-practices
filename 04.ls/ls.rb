@@ -122,7 +122,7 @@ end
 
 def calc_max_width_by_detail(details_by_file_name)
   DETAILS_KEYS.to_h do |key|
-    widths_by_detail = details_by_file_name.map { |_file_name, details| calc_actual_length(details[key]) }
+    widths_by_detail = details_by_file_name.map { |_file_name, details| calc_display_length(details[key]) }
     [key, widths_by_detail.max]
   end
 end
@@ -134,25 +134,25 @@ def output_default_format(file_names)
   # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
   # NOTE: file_names_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されている
   file_names_table = file_names.each_slice(row_count).to_a
-  widths = file_names_table.map { |col| col.map { |file_name| calc_actual_length(file_name) }.max + SPACE_WIDTH }
+  widths = file_names_table.map { |col| col.map { |file_name| calc_display_length(file_name) }.max + SPACE_WIDTH }
   row_count.times do |row_index|
     col_count.times do |col_index|
       # file_names_tableの行と列が逆で保存されているので、col_indexとrow_indexを入れ替えて出力させている
       target_file_name = file_names_table[col_index][row_index]
-      print ljust_include_multibyte_characters(target_file_name, widths[col_index])
+      print ljust_multibyte_chars(target_file_name, widths[col_index])
     end
     print "\n"
   end
 end
 
-def calc_actual_length(file_name)
+def calc_display_length(file_name)
   file_name.chars.sum { |char| char.bytesize == 1 ? 1 : 2 }
 end
 
-def ljust_include_multibyte_characters(ljust_target, width)
+def ljust_multibyte_chars(ljust_target, width)
   return nil if ljust_target.nil?
 
-  adjusted_width = width - (calc_actual_length(ljust_target) - ljust_target.length)
+  adjusted_width = width - (calc_display_length(ljust_target) - ljust_target.length)
   ljust_target.ljust(adjusted_width)
 end
 
