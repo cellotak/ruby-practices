@@ -59,9 +59,7 @@ def output_long_listing_format(file_names, directory_path)
 
   max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
 
-  file_names.each do |file_name|
-    details = details_by_file_name[file_name]
-
+  details_by_file_name.each do |file_name, details|
     DETAILS_KEYS.each do |key|
       if RJUST_KEYS.include?(key)
         print details[key].rjust(max_width_by_detail[key])
