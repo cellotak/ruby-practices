@@ -16,12 +16,10 @@ def main
   # pathsには複数のpathを指定することは許容しているが、ファイル名を表示するのは1番目に指定したディレクトリorファイルのみにしている。
   path = paths[0] || './'
   if File.directory?(path)
-    directory_path = path
-    file_names = fetch_file_names(directory_path, options)
-    output(file_names, directory_path, options)
+    file_names = fetch_file_names(path, options)
+    output(file_names, path, options)
   elsif File.file?(path)
-    file_path = path
-    file_name_specified_output(file_path, options)
+    output_single_file(path, options)
   end
 end
 
@@ -158,7 +156,7 @@ def ljust_include_multibyte_characters(ljust_target, width)
   ljust_target.ljust(adjusted_width)
 end
 
-def file_name_specified_output(file_path, options)
+def output_single_file(file_path, options)
   if options[:l]
     stat = File.stat(file_path)
     details = convert_stat_to_details(stat)
