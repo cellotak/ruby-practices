@@ -8,7 +8,7 @@ MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
 FILE_TYPES = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_KEYS = {stat_mode: :left, nlink: :right , username: :left, groupname: :left, size: :right, ctime: :left}.freeze
+DETAILS_KEYS = { stat_mode: :left, nlink: :right, username: :left, groupname: :left, size: :right, ctime: :left }.freeze
 
 def main
   options, paths = parse_options(ARGV)
@@ -18,7 +18,10 @@ def main
     file_names = fetch_file_names(path, options)
     output(file_names, path, options)
   elsif File.file?(path)
-    output_single_file(path, options)
+    file_path = File.basename(path)
+    file_names = [file_path]
+    directory_path = File.dirname(path)
+    output(file_names, directory_path, options)
   end
 end
 
@@ -68,7 +71,7 @@ def output_long_listing_format(file_names, directory_path)
 end
 
 def calc_block_count_total(details_by_file_name)
-  details_by_file_name.sum do |file_name, details|
+  details_by_file_name.sum do |_file_name, details|
     details[:blocks]
   end
 end
@@ -89,7 +92,7 @@ def convert_stat_to_details(stat)
     groupname: Etc.getgrgid(stat.gid).name,
     size: stat.size.to_s,
     ctime: stat.ctime.strftime('%b %e %H:%M'),
-    blocks: stat.blocks 
+    blocks: stat.blocks
   }
 end
 
@@ -151,18 +154,6 @@ def ljust_multibyte_chars(ljust_target, width)
 
   adjusted_width = width - (calc_display_length(ljust_target) - ljust_target.length)
   ljust_target.ljust(adjusted_width)
-end
-
-def output_single_file(file_path, options)
-  if options[:l]
-    stat = File.stat(file_path)
-    details = convert_stat_to_details(stat)
-
-    DETAILS_KEYS.each do |key|
-      print "#{details[key]} "
-    end
-  end
-  puts file_path
 end
 
 main
