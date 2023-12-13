@@ -8,7 +8,7 @@ MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
 FILE_TYPES = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_KEYS = { stat_mode: :left, nlink: :right, username: :left, groupname: :left, size: :right, ctime: :left }.freeze
+DETAILS_KEYS = { stat_mode: :left, nlink: :right, username: :left, groupname: :left, size: :right, ctime: :left, file_name: :left }.freeze
 
 def main
   options, paths = parse_options(ARGV)
@@ -17,7 +17,7 @@ def main
   if File.directory?(path)
     file_names = fetch_file_names(path, options)
     output(file_names, path, options)
-  elsif File.file?(path)
+  else
     file_path = File.basename(path)
     file_names = [file_path]
     directory_path = File.dirname(path)
@@ -59,28 +59,29 @@ def output_long_listing_format(file_names, directory_path)
 
   max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
 
-  details_by_file_name.each do |file_name, details|
+  details_by_file_name.each do |details|
     DETAILS_KEYS.each do |key, align|
       value = details[key]
       width = max_width_by_detail[key]
       print(align == :right ? value.rjust(width) : value.ljust(width))
       print ' '
     end
-    puts file_name
+    print "\n"
   end
 end
 
 def calc_block_count_total(details_by_file_name)
-  details_by_file_name.sum do |_file_name, details|
+  details_by_file_name.sum do |details|
     details[:blocks]
   end
 end
 
 def build_details_by_file_name(file_names, directory_path)
-  file_names.to_h do |file_name|
+  file_names.map do |file_name|
     stat = File.stat("#{directory_path}/#{file_name}")
     details = convert_stat_to_details(stat)
-    [file_name, details]
+    details[:file_name] = file_name
+    details
   end
 end
 
@@ -122,7 +123,7 @@ end
 
 def calc_max_width_by_detail(details_by_file_name)
   DETAILS_KEYS.to_h do |key|
-    widths_by_detail = details_by_file_name.map { |_file_name, details| calc_display_length(details[key]) }
+    widths_by_detail = details_by_file_name.map { |details| calc_display_length(details[key]) }
     [key, widths_by_detail.max]
   end
 end
