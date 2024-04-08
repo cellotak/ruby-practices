@@ -145,3 +145,5 @@ def output_default_format(file_names)
 end
 
 main
+
+## githubの動作確認用に差分を作りたい
