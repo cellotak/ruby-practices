@@ -2,37 +2,19 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'etc'
-
-# MAX_COL_COUNT = 3
-# SPACE_WIDTH = 2
-
-# FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-# DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime].freeze
-# RJUST_LIST = %i[nlink size].freeze
 
 def main
-  puts "ARGV: #{ARGV}"
-  p "ARGV: #{ARGV.inspect}"
   options, file_paths = parse_options(ARGV)
 
-  # パイプからの入力を処理
+  # パイプで接続した場合 STDIN.tty? は false になる
   if file_paths.empty? && !STDIN.tty?
-    # 標準入力がパイプの場合
     stdin_content = STDIN.read
-    # 改行で分割してファイルパスのリストを作成
-    # file_paths = stdin_content.strip.split("\n").reject(&:empty?)
     file_paths = parse_ls_output(stdin_content)
   end
 
   file_paths.each do |file_path|
-    puts "Processing file: #{file_path}"
+    process_file(file_path)
   end
-
-  puts "Options: #{options.inspect}"
-  puts "options[:l] = #{options[:l].inspect}" if options[:l]
-  puts "options[:w] = #{options[:w].inspect}" if options[:w]
-  puts "options[:c] = #{options[:c].inspect}" if options[:c]
 end
 
 def parse_options(argv)
@@ -52,15 +34,32 @@ def parse_ls_output(content)
   lines.each do |line|
     next if line.start_with?('total')
 
-    parts = line.split
-    filename = parts[8]
+    filename = line.split[8]
+    # 本家lsコマンドだとファイル名に色コードが含まれている場合があるためその対応
+    filename = filename.gsub(/\e\[[0-9;]*m/, '')
+    next if filename == '.' || filename == '..'
 
-    filename = filename.split('->').first if filename.include?('->')
-
-    file_paths << filename unless filename == '.' || filename == '..'
+    file_paths << filename
   end
 
   file_paths
+end
+
+def process_file(file_path)
+  puts "Processing file: #{file_path}"
+
+  unless File.exist?(file_path)
+    puts "wc: #{file_path}: No such file or directory"
+    return
+  end
+
+  if File.directory?(file_path)
+    puts "wc: #{file_path}: Is a directory"
+    return
+  end
+
+  content = File.read(file_path)
+  puts "File.read(file_path).inspect = #{content.inspect}"
 end
 
 main
