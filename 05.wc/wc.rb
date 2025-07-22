@@ -13,7 +13,7 @@ def main
   end
 
   file_paths.each do |file_path|
-    process_file(file_path)
+    process_file(file_path, options)
   end
 end
 
@@ -45,9 +45,7 @@ def parse_ls_output(content)
   file_paths
 end
 
-def process_file(file_path)
-  puts "Processing file: #{file_path}"
-
+def process_file(file_path, options)
   unless File.exist?(file_path)
     puts "wc: #{file_path}: No such file or directory"
     return
@@ -59,7 +57,20 @@ def process_file(file_path)
   end
 
   content = File.read(file_path)
-  puts "File.read(file_path).inspect = #{content.inspect}"
+  count_stats = count_content(content)
+  puts "count_stats = #{count_stats.inspect}"
+end
+
+def count_content(content)
+  lines = content.count("\n")
+  words = content.split.size
+  bytes = content.bytesize
+
+  {
+    lines: lines,
+    words: words,
+    bytes: bytes
+  }
 end
 
 main
