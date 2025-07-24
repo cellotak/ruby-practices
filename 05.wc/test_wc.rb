@@ -188,57 +188,54 @@ class TestWc < Minitest::Test
     assert_equal "123 456 789 large.txt\n", output[0]
   end
 
-  def test_process_file_returns_stats
+  def test_read_and_count_file_returns_stats
     capture_io do
-      result = process_file('test_directory/file1.txt', {})
+      result = read_and_count_file('test_directory/file1.txt')
       assert_equal({ lines: 2, words: 2, bytes: 12 }, result)
     end
   end
 
-  def test_process_file_empty_file
+  def test_read_and_count_file_empty_file
     capture_io do
-      result = process_file('test_directory/empty.txt', {})
+      result = read_and_count_file('test_directory/empty.txt')
       assert_equal({ lines: 0, words: 0, bytes: 0 }, result)
     end
   end
 
-  def test_process_file_single_line_no_newline
+  def test_read_and_count_file_single_line_no_newline
     capture_io do
-      result = process_file('test_directory/single_line.txt', {})
+      result = read_and_count_file('test_directory/single_line.txt')
       assert_equal({ lines: 0, words: 4, bytes: 27 }, result)
     end
   end
 
-  def test_process_file_japanese
+  def test_read_and_count_file_japanese
     capture_io do
-      result = process_file('test_directory/japanese.txt', {})
+      result = read_and_count_file('test_directory/japanese.txt')
       assert_equal({ lines: 2, words: 2, bytes: 23 }, result)
     end
   end
 
-  def test_process_file_nonexistent_file
+  def test_read_and_count_file_nonexistent_file
     capture_io do
-      result = process_file('nonexistent.txt', {})
+      result = read_and_count_file('nonexistent.txt')
       assert_nil result
     end
   end
 
   def test_multiple_files_with_total
-    # ARGVを一時的に変更してmainを実行
     original_argv = ARGV.dup
     ARGV.replace(['test_directory/file1.txt', 'test_directory/file2.txt'])
 
     output = capture_io do
       main
     ensure
-      # ARGVを元に戻す
       ARGV.replace(original_argv)
     end
 
     lines = output[0].split("\n")
     assert_equal 3, lines.size
 
-    # 実際のwc結果に合わせて修正
     assert_equal " 2  2 12 test_directory/file1.txt", lines[0]
     assert_equal " 3  8 35 test_directory/file2.txt", lines[1]
     assert_equal " 5 10 47 total", lines[2]
