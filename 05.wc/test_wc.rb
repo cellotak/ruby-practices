@@ -115,4 +115,166 @@ class TestWc < Minitest::Test
     result = count_content(content)
     assert_equal({ lines: 2, words: 2, bytes: 23 }, result)
   end
+
+  def test_output_format_no_options
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = {}
+    file_path = "test.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal " 2  6 27 test.txt\n", output[0]
+  end
+
+  def test_output_format_with_l_option
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = { l: true }
+    file_path = "test.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal " 2 test.txt\n", output[0]
+  end
+
+  def test_output_format_with_w_option
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = { w: true }
+    file_path = "test.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal " 6 test.txt\n", output[0]
+  end
+
+  def test_output_format_with_c_option
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = { c: true }
+    file_path = "test.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal "27 test.txt\n", output[0]
+  end
+
+  def test_output_format_with_multiple_options
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = { l: true, w: true }
+    file_path = "test.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal " 2  6 test.txt\n", output[0]
+  end
+
+  def test_output_format_large_numbers
+    count_stats = { lines: 123, words: 456, bytes: 789 }
+    options = {}
+    file_path = "large.txt"
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal "123 456 789 large.txt\n", output[0]
+  end
+
+  def test_process_file_returns_stats
+    capture_io do
+      result = process_file('test_directory/file1.txt', {})
+      assert_equal({ lines: 2, words: 2, bytes: 12 }, result)
+    end
+  end
+
+  def test_process_file_empty_file
+    capture_io do
+      result = process_file('test_directory/empty.txt', {})
+      assert_equal({ lines: 0, words: 0, bytes: 0 }, result)
+    end
+  end
+
+  def test_process_file_single_line_no_newline
+    capture_io do
+      result = process_file('test_directory/single_line.txt', {})
+      assert_equal({ lines: 0, words: 4, bytes: 27 }, result)
+    end
+  end
+
+  def test_process_file_japanese
+    capture_io do
+      result = process_file('test_directory/japanese.txt', {})
+      assert_equal({ lines: 2, words: 2, bytes: 23 }, result)
+    end
+  end
+
+  def test_process_file_nonexistent_file
+    capture_io do
+      result = process_file('nonexistent.txt', {})
+      assert_nil result
+    end
+  end
+
+  def test_multiple_files_with_total
+    # ARGVを一時的に変更してmainを実行
+    original_argv = ARGV.dup
+    ARGV.replace(['test_directory/file1.txt', 'test_directory/file2.txt'])
+
+    output = capture_io do
+      main
+    ensure
+      # ARGVを元に戻す
+      ARGV.replace(original_argv)
+    end
+
+    lines = output[0].split("\n")
+    assert_equal 3, lines.size
+
+    # 実際のwc結果に合わせて修正
+    assert_equal " 2  2 12 test_directory/file1.txt", lines[0]
+    assert_equal " 3  8 35 test_directory/file2.txt", lines[1]
+    assert_equal " 5 10 47 total", lines[2]
+  end
+
+  def test_single_file_no_total
+    original_argv = ARGV.dup
+    ARGV.replace(['test_directory/file1.txt'])
+
+    output = capture_io do
+      main
+    ensure
+      ARGV.replace(original_argv)
+    end
+
+    lines = output[0].split("\n")
+    assert_equal 1, lines.size  # totalがないことを確認
+    assert_equal " 2  2 12 test_directory/file1.txt", lines[0]
+  end
+
+  def test_multiple_files_with_options
+    original_argv = ARGV.dup
+    ARGV.replace(['-l', 'test_directory/file1.txt', 'test_directory/file2.txt'])
+
+    output = capture_io do
+      main
+    ensure
+      ARGV.replace(original_argv)
+    end
+
+    lines = output[0].split("\n")
+    assert_equal 3, lines.size
+
+    # -lオプションなので行数のみ表示
+    assert_equal " 2 test_directory/file1.txt", lines[0]
+    assert_equal " 3 test_directory/file2.txt", lines[1]
+    assert_equal " 5 total", lines[2]
+  end
 end

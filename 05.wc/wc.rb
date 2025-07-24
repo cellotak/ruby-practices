@@ -12,8 +12,19 @@ def main
     file_paths = parse_ls_output(stdin_content)
   end
 
+  total_stats = { lines: 0, words: 0, bytes: 0 }
+
   file_paths.each do |file_path|
-    process_file(file_path, options)
+    file_stats = process_file(file_path, options)
+    if file_stats
+      total_stats[:lines] += file_stats[:lines]
+      total_stats[:words] += file_stats[:words]
+      total_stats[:bytes] += file_stats[:bytes]
+    end
+  end
+
+  if file_paths.size > 1
+    output_format(total_stats, options, "total")
   end
 end
 
@@ -48,17 +59,18 @@ end
 def process_file(file_path, options)
   unless File.exist?(file_path)
     puts "wc: #{file_path}: No such file or directory"
-    return
+    return nil
   end
 
   if File.directory?(file_path)
     puts "wc: #{file_path}: Is a directory"
-    return
+    return nil
   end
 
   content = File.read(file_path)
   count_stats = count_content(content)
-  puts "count_stats = #{count_stats.inspect}"
+  output_format(count_stats, options, file_path)
+  count_stats # tolal_statsの計算用の戻り値
 end
 
 def count_content(content)
@@ -71,6 +83,24 @@ def count_content(content)
     words: words,
     bytes: bytes
   }
+end
+
+def output_format(count_stats, options, file_path)
+  output = []
+
+  # オプションが指定されていない場合はすべて表示
+  if options.empty?
+    output << count_stats[:lines].to_s.rjust(2)
+    output << count_stats[:words].to_s.rjust(2)
+    output << count_stats[:bytes].to_s.rjust(2)
+  else
+    output << count_stats[:lines].to_s.rjust(2) if options[:l]
+    output << count_stats[:words].to_s.rjust(2) if options[:w]
+    output << count_stats[:bytes].to_s.rjust(2) if options[:c]
+  end
+
+  output << file_path
+  puts output.join(' ')
 end
 
 main
