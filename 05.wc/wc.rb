@@ -10,32 +10,20 @@ def main
 
   # パイプで接続した場合 STDIN.tty? は false になる
   if file_paths.empty? && !$stdin.tty?
-    stdin_content = $stdin.read
-    count_stats = count_content(stdin_content)
+    count_stats = count_content($stdin.read)
 
     # file_pathにnilを渡すことで、ファイル名を出力しない
     output_format(count_stats, options, nil)
     return
   end
 
-  total_stats = { lines: 0, words: 0, bytes: 0 }
-  file_stats_list = []
-
-  file_paths.each do |file_path|
-    file_stats = read_and_count_file(file_path)
-    next unless file_stats
-
-    file_stats_list << { stats: file_stats, path: file_path }
-    total_stats[:lines] += file_stats[:lines]
-    total_stats[:words] += file_stats[:words]
-    total_stats[:bytes] += file_stats[:bytes]
-  end
+  file_stats_list, total_stats = collect_file_stats(file_paths)
 
   file_stats_list.each do |file_data|
     output_format(file_data[:stats], options, file_data[:path])
   end
 
-  return unless file_stats_list.size > 1
+  return if file_stats_list.size <= 1
 
   output_format(total_stats, options, 'total')
 end
@@ -75,6 +63,23 @@ def count_content(content)
     words:,
     bytes:
   }
+end
+
+def collect_file_stats(file_paths)
+  file_stats_list = []
+  total_stats = { lines: 0, words: 0, bytes: 0 }
+
+  file_paths.each do |file_path|
+    file_stats = read_and_count_file(file_path)
+    next unless file_stats
+
+    file_stats_list << { stats: file_stats, path: file_path }
+    total_stats[:lines] += file_stats[:lines]
+    total_stats[:words] += file_stats[:words]
+    total_stats[:bytes] += file_stats[:bytes]
+  end
+
+  [file_stats_list, total_stats]
 end
 
 def output_format(count_stats, options, file_path)

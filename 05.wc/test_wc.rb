@@ -94,6 +94,36 @@ class TestWc < Minitest::Test
     assert_equal({ lines: 2, words: 2, bytes: 23 }, result)
   end
 
+  def test_collect_file_stats_multiple_files
+    file_stats_list, total_stats = collect_file_stats(['test_directory/file1.txt', 'test_directory/file2.txt'])
+
+    assert_equal 2, file_stats_list.size
+    assert_equal({ lines: 2, words: 2, bytes: 12 }, file_stats_list[0][:stats])
+    assert_equal 'test_directory/file1.txt', file_stats_list[0][:path]
+    assert_equal({ lines: 3, words: 8, bytes: 35 }, file_stats_list[1][:stats])
+    assert_equal 'test_directory/file2.txt', file_stats_list[1][:path]
+    assert_equal({ lines: 5, words: 10, bytes: 47 }, total_stats)
+  end
+
+  def test_collect_file_stats_single_file
+    file_stats_list, total_stats = collect_file_stats(['test_directory/file1.txt'])
+
+    assert_equal 1, file_stats_list.size
+    assert_equal({ lines: 2, words: 2, bytes: 12 }, file_stats_list[0][:stats])
+    assert_equal 'test_directory/file1.txt', file_stats_list[0][:path]
+    assert_equal({ lines: 2, words: 2, bytes: 12 }, total_stats)
+  end
+
+  def test_collect_file_stats_with_nonexistent_file
+    capture_io do
+      file_stats_list, total_stats = collect_file_stats(['test_directory/file1.txt', 'nonexistent.txt'])
+
+      assert_equal 1, file_stats_list.size
+      assert_equal({ lines: 2, words: 2, bytes: 12 }, file_stats_list[0][:stats])
+      assert_equal({ lines: 2, words: 2, bytes: 12 }, total_stats)
+    end
+  end
+
   def test_output_format_no_options
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = {}
@@ -284,7 +314,7 @@ class TestWc < Minitest::Test
       -rw-r--r-- 1 user user    9 Jul  9 01:07 file2.txt
     OUTPUT
 
-    # STDIN.tty? が false を返すようにモック（パイプ接続をシミュレート）
+    # $stdin.tty? が false を返すようにモック（パイプ接続をシミュレート）
     $stdin.stub :tty?, false do
       $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
