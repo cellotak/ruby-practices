@@ -23,21 +23,21 @@ def main
 
   file_paths.each do |file_path|
     file_stats = read_and_count_file(file_path)
-    if file_stats
-      file_stats_list << { stats: file_stats, path: file_path }
-      total_stats[:lines] += file_stats[:lines]
-      total_stats[:words] += file_stats[:words]
-      total_stats[:bytes] += file_stats[:bytes]
-    end
+    next unless file_stats
+
+    file_stats_list << { stats: file_stats, path: file_path }
+    total_stats[:lines] += file_stats[:lines]
+    total_stats[:words] += file_stats[:words]
+    total_stats[:bytes] += file_stats[:bytes]
   end
 
   file_stats_list.each do |file_data|
     output_format(file_data[:stats], options, file_data[:path])
   end
 
-  if file_stats_list.size > 1
-    output_format(total_stats, options, "total")
-  end
+  return unless file_stats_list.size > 1
+
+  output_format(total_stats, options, 'total')
 end
 
 def parse_options(argv)
@@ -71,9 +71,9 @@ def count_content(content)
   bytes = content.bytesize
 
   {
-    lines: lines,
-    words: words,
-    bytes: bytes
+    lines:,
+    words:,
+    bytes:
   }
 end
 

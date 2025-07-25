@@ -51,13 +51,13 @@ class TestWc < Minitest::Test
   end
 
   def test_count_content_empty_string
-    content = ""
+    content = ''
     result = count_content(content)
     assert_equal({ lines: 0, words: 0, bytes: 0 }, result)
   end
 
   def test_count_content_single_line_no_newline
-    content = "hello world"
+    content = 'hello world'
     result = count_content(content)
     assert_equal({ lines: 0, words: 2, bytes: 11 }, result)
   end
@@ -95,7 +95,7 @@ class TestWc < Minitest::Test
   def test_output_format_no_options
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = {}
-    file_path = "test.txt"
+    file_path = 'test.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -107,7 +107,7 @@ class TestWc < Minitest::Test
   def test_output_format_with_l_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = { l: true }
-    file_path = "test.txt"
+    file_path = 'test.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -119,7 +119,7 @@ class TestWc < Minitest::Test
   def test_output_format_with_w_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = { w: true }
-    file_path = "test.txt"
+    file_path = 'test.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -131,7 +131,7 @@ class TestWc < Minitest::Test
   def test_output_format_with_c_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = { c: true }
-    file_path = "test.txt"
+    file_path = 'test.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -143,7 +143,7 @@ class TestWc < Minitest::Test
   def test_output_format_with_multiple_options
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = { l: true, w: true }
-    file_path = "test.txt"
+    file_path = 'test.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -155,7 +155,7 @@ class TestWc < Minitest::Test
   def test_output_format_large_numbers
     count_stats = { lines: 123, words: 456, bytes: 789 }
     options = {}
-    file_path = "large.txt"
+    file_path = 'large.txt'
 
     output = capture_io do
       output_format(count_stats, options, file_path)
@@ -235,9 +235,9 @@ class TestWc < Minitest::Test
     lines = output[0].split("\n")
     assert_equal 3, lines.size
 
-    assert_equal " 2  2 12 test_directory/file1.txt", lines[0]
-    assert_equal " 3  8 35 test_directory/file2.txt", lines[1]
-    assert_equal " 5 10 47 total", lines[2]
+    assert_equal ' 2  2 12 test_directory/file1.txt', lines[0]
+    assert_equal ' 3  8 35 test_directory/file2.txt', lines[1]
+    assert_equal ' 5 10 47 total', lines[2]
   end
 
   def test_single_file_no_total
@@ -252,7 +252,7 @@ class TestWc < Minitest::Test
 
     lines = output[0].split("\n")
     assert_equal 1, lines.size  # totalがないことを確認
-    assert_equal " 2  2 12 test_directory/file1.txt", lines[0]
+    assert_equal ' 2  2 12 test_directory/file1.txt', lines[0]
   end
 
   def test_multiple_files_with_options
@@ -268,9 +268,9 @@ class TestWc < Minitest::Test
     lines = output[0].split("\n")
     assert_equal 3, lines.size
 
-    assert_equal " 2 test_directory/file1.txt", lines[0]
-    assert_equal " 3 test_directory/file2.txt", lines[1]
-    assert_equal " 5 total", lines[2]
+    assert_equal ' 2 test_directory/file1.txt', lines[0]
+    assert_equal ' 3 test_directory/file2.txt', lines[1]
+    assert_equal ' 5 total', lines[2]
   end
 
   def test_count_ls_output_via_pipe
@@ -372,7 +372,7 @@ class TestWc < Minitest::Test
   end
 
   def test_count_empty_ls_output_via_pipe
-    ls_output = ""
+    ls_output = ''
 
     STDIN.stub :tty?, false do
       STDIN.stub :read, ls_output do
