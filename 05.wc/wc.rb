@@ -3,13 +3,19 @@
 
 require 'optparse'
 
+RJUST_WIDTH = 2
+
 def main
   options, file_paths = parse_options(ARGV)
 
   # パイプで接続した場合 STDIN.tty? は false になる
   if file_paths.empty? && !STDIN.tty?
     stdin_content = STDIN.read
-    file_paths = parse_ls_output(stdin_content)
+    count_stats = count_content(stdin_content)
+
+    # file_pathにnilを渡すことで、ファイル名を出力しない
+    output_format(count_stats, options, nil)
+    return
   end
 
   total_stats = { lines: 0, words: 0, bytes: 0 }
@@ -44,24 +50,6 @@ def parse_options(argv)
   [options, file_paths]
 end
 
-def parse_ls_output(content)
-  lines = content.strip.split("\n")
-  file_paths = []
-
-  lines.each do |line|
-    next if line.start_with?('total')
-
-    filename = line.split[8]
-    # 本家lsコマンドだとファイル名に色コードが含まれている場合があるためその対応
-    filename = filename.gsub(/\e\[[0-9;]*m/, '')
-    next if filename == '.' || filename == '..'
-
-    file_paths << filename
-  end
-
-  file_paths
-end
-
 def read_and_count_file(file_path)
   unless File.exist?(file_path)
     puts "wc: #{file_path}: No such file or directory"
@@ -93,16 +81,16 @@ def output_format(count_stats, options, file_path)
   output = []
 
   if options.empty?
-    output << count_stats[:lines].to_s.rjust(2)
-    output << count_stats[:words].to_s.rjust(2)
-    output << count_stats[:bytes].to_s.rjust(2)
+    output << count_stats[:lines].to_s.rjust(RJUST_WIDTH)
+    output << count_stats[:words].to_s.rjust(RJUST_WIDTH)
+    output << count_stats[:bytes].to_s.rjust(RJUST_WIDTH)
   else
-    output << count_stats[:lines].to_s.rjust(2) if options[:l]
-    output << count_stats[:words].to_s.rjust(2) if options[:w]
-    output << count_stats[:bytes].to_s.rjust(2) if options[:c]
+    output << count_stats[:lines].to_s.rjust(RJUST_WIDTH) if options[:l]
+    output << count_stats[:words].to_s.rjust(RJUST_WIDTH) if options[:w]
+    output << count_stats[:bytes].to_s.rjust(RJUST_WIDTH) if options[:c]
   end
 
-  output << file_path
+  output << file_path if file_path
   puts output.join(' ')
 end
 

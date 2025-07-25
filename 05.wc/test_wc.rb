@@ -38,30 +38,6 @@ class TestWc < Minitest::Test
     assert_equal(['file1.txt', 'file2.txt'], file_paths)
   end
 
-  def test_parse_ls_output
-    ls_output = <<~OUTPUT
-      total 16
-      drwxr-xr-x 2 cellotak cellotak 4096 Jul  9 01:08 .
-      drwxr-xr-x 3 cellotak cellotak 4096 Jul 10 00:50 ..
-      -rw-r--r-- 1 cellotak cellotak    5 Jul  9 01:08 hoge1.txt
-      -rw-r--r-- 1 cellotak cellotak    9 Jul  9 01:07 hoge2.txt
-    OUTPUT
-
-    result = parse_ls_output(ls_output)
-    assert_equal(['hoge1.txt', 'hoge2.txt'], result)
-  end
-
-  def test_parse_ls_output_with_symlink
-    ls_output = <<~OUTPUT
-      total 8
-      -rw-r--r-- 1 user user 5 Jul  9 01:08 file.txt
-      lrwxrwxrwx 1 user user 8 Jul  9 01:08 link.txt -> file.txt
-    OUTPUT
-
-    result = parse_ls_output(ls_output)
-    assert_equal(['file.txt', 'link.txt'], result)
-  end
-
   def test_count_content_basic
     content = "hello world\nthis is a test\n"
     result = count_content(content)
@@ -188,6 +164,18 @@ class TestWc < Minitest::Test
     assert_equal "123 456 789 large.txt\n", output[0]
   end
 
+  def test_output_format_without_file_path
+    count_stats = { lines: 2, words: 6, bytes: 27 }
+    options = {}
+    file_path = nil
+
+    output = capture_io do
+      output_format(count_stats, options, file_path)
+    end
+
+    assert_equal " 2  6 27\n", output[0]
+  end
+
   def test_read_and_count_file_returns_stats
     capture_io do
       result = read_and_count_file('test_directory/file1.txt')
@@ -217,10 +205,21 @@ class TestWc < Minitest::Test
   end
 
   def test_read_and_count_file_nonexistent_file
-    capture_io do
+    output = capture_io do
       result = read_and_count_file('nonexistent.txt')
       assert_nil result
     end
+
+    assert_match(/wc: nonexistent.txt: No such file or directory/, output[0])
+  end
+
+  def test_read_and_count_file_directory
+    output = capture_io do
+      result = read_and_count_file('test_directory')
+      assert_nil result
+    end
+
+    assert_match(/wc: test_directory: Is a directory/, output[0])
   end
 
   def test_multiple_files_with_total
@@ -269,9 +268,125 @@ class TestWc < Minitest::Test
     lines = output[0].split("\n")
     assert_equal 3, lines.size
 
-    # -lオプションなので行数のみ表示
     assert_equal " 2 test_directory/file1.txt", lines[0]
     assert_equal " 3 test_directory/file2.txt", lines[1]
     assert_equal " 5 total", lines[2]
+  end
+
+  def test_count_ls_output_via_pipe
+    ls_output = <<~OUTPUT
+      total 16
+      drwxr-xr-x 2 user user 4096 Jul  9 01:08 .
+      drwxr-xr-x 3 user user 4096 Jul 10 00:50 ..
+      -rw-r--r-- 1 user user    5 Jul  9 01:08 file1.txt
+      -rw-r--r-- 1 user user    9 Jul  9 01:07 file2.txt
+    OUTPUT
+
+    # STDIN.tty? が false を返すようにモック（パイプ接続をシミュレート）
+    STDIN.stub :tty?, false do
+      STDIN.stub :read, ls_output do
+        original_argv = ARGV.dup
+        ARGV.replace([])
+
+        output = capture_io do
+          main
+        ensure
+          ARGV.replace(original_argv)
+        end
+
+        assert_equal " 5 38 198\n", output[0]
+      end
+    end
+  end
+
+  def test_count_ls_output_with_l_option_via_pipe
+    ls_output = <<~OUTPUT
+      total 16
+      drwxr-xr-x 2 user user 4096 Jul  9 01:08 .
+      drwxr-xr-x 3 user user 4096 Jul 10 00:50 ..
+      -rw-r--r-- 1 user user    5 Jul  9 01:08 file1.txt
+      -rw-r--r-- 1 user user    9 Jul  9 01:07 file2.txt
+    OUTPUT
+
+    STDIN.stub :tty?, false do
+      STDIN.stub :read, ls_output do
+        original_argv = ARGV.dup
+        ARGV.replace(['-l'])
+
+        output = capture_io do
+          main
+        ensure
+          ARGV.replace(original_argv)
+        end
+
+        lines = ls_output.count("\n")
+        assert_equal " 5\n", output[0]
+      end
+    end
+  end
+
+  def test_count_ls_output_with_w_option_via_pipe
+    ls_output = <<~OUTPUT
+      total 8
+      -rw-r--r-- 1 user user 12 Jul  9 01:08 test.txt
+      lrwxrwxrwx 1 user user  8 Jul  9 01:08 link.txt -> test.txt
+    OUTPUT
+
+    STDIN.stub :tty?, false do
+      STDIN.stub :read, ls_output do
+        original_argv = ARGV.dup
+        ARGV.replace(['-w'])
+
+        output = capture_io do
+          main
+        ensure
+          ARGV.replace(original_argv)
+        end
+
+        words = ls_output.split.size
+        assert_equal "22\n", output[0]
+      end
+    end
+  end
+
+  def test_count_ls_output_with_c_option_via_pipe
+    ls_output = <<~OUTPUT
+      total 4
+      -rw-r--r-- 1 user user 100 Jul  9 01:08 example.txt
+    OUTPUT
+
+    STDIN.stub :tty?, false do
+      STDIN.stub :read, ls_output do
+        original_argv = ARGV.dup
+        ARGV.replace(['-c'])
+
+        output = capture_io do
+          main
+        ensure
+          ARGV.replace(original_argv)
+        end
+
+        assert_equal "60\n", output[0]
+      end
+    end
+  end
+
+  def test_count_empty_ls_output_via_pipe
+    ls_output = ""
+
+    STDIN.stub :tty?, false do
+      STDIN.stub :read, ls_output do
+        original_argv = ARGV.dup
+        ARGV.replace([])
+
+        output = capture_io do
+          main
+        ensure
+          ARGV.replace(original_argv)
+        end
+
+        assert_equal " 0  0  0\n", output[0]
+      end
+    end
   end
 end
