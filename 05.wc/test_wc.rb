@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require_relative 'wc'
 
@@ -251,7 +253,7 @@ class TestWc < Minitest::Test
     end
 
     lines = output[0].split("\n")
-    assert_equal 1, lines.size  # totalがないことを確認
+    assert_equal 1, lines.size # totalがないことを確認
     assert_equal ' 2  2 12 test_directory/file1.txt', lines[0]
   end
 
@@ -283,8 +285,8 @@ class TestWc < Minitest::Test
     OUTPUT
 
     # STDIN.tty? が false を返すようにモック（パイプ接続をシミュレート）
-    STDIN.stub :tty?, false do
-      STDIN.stub :read, ls_output do
+    $stdin.stub :tty?, false do
+      $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
         ARGV.replace([])
 
@@ -308,8 +310,8 @@ class TestWc < Minitest::Test
       -rw-r--r-- 1 user user    9 Jul  9 01:07 file2.txt
     OUTPUT
 
-    STDIN.stub :tty?, false do
-      STDIN.stub :read, ls_output do
+    $stdin.stub :tty?, false do
+      $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
         ARGV.replace(['-l'])
 
@@ -319,7 +321,7 @@ class TestWc < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        lines = ls_output.count("\n")
+        ls_output.count("\n")
         assert_equal " 5\n", output[0]
       end
     end
@@ -332,8 +334,8 @@ class TestWc < Minitest::Test
       lrwxrwxrwx 1 user user  8 Jul  9 01:08 link.txt -> test.txt
     OUTPUT
 
-    STDIN.stub :tty?, false do
-      STDIN.stub :read, ls_output do
+    $stdin.stub :tty?, false do
+      $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
         ARGV.replace(['-w'])
 
@@ -343,7 +345,7 @@ class TestWc < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        words = ls_output.split.size
+        ls_output.split.size
         assert_equal "22\n", output[0]
       end
     end
@@ -355,8 +357,8 @@ class TestWc < Minitest::Test
       -rw-r--r-- 1 user user 100 Jul  9 01:08 example.txt
     OUTPUT
 
-    STDIN.stub :tty?, false do
-      STDIN.stub :read, ls_output do
+    $stdin.stub :tty?, false do
+      $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
         ARGV.replace(['-c'])
 
@@ -374,8 +376,8 @@ class TestWc < Minitest::Test
   def test_count_empty_ls_output_via_pipe
     ls_output = ''
 
-    STDIN.stub :tty?, false do
-      STDIN.stub :read, ls_output do
+    $stdin.stub :tty?, false do
+      $stdin.stub :read, ls_output do
         original_argv = ARGV.dup
         ARGV.replace([])
 

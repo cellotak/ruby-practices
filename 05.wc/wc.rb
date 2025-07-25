@@ -9,8 +9,8 @@ def main
   options, file_paths = parse_options(ARGV)
 
   # パイプで接続した場合 STDIN.tty? は false になる
-  if file_paths.empty? && !STDIN.tty?
-    stdin_content = STDIN.read
+  if file_paths.empty? && !$stdin.tty?
+    stdin_content = $stdin.read
     count_stats = count_content(stdin_content)
 
     # file_pathにnilを渡すことで、ファイル名を出力しない
