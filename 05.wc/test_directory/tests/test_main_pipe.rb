@@ -24,7 +24,7 @@ class TestMainPipe < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        assert_equal " 5 38 198\n", output[0]
+        assert_equal "  5  38 198\n", output[0]
       end
     end
   end
@@ -49,7 +49,7 @@ class TestMainPipe < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        assert_equal " 5\n", output[0]
+        assert_equal "  5\n", output[0]
       end
     end
   end
@@ -72,7 +72,7 @@ class TestMainPipe < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        assert_equal "22\n", output[0]
+        assert_equal " 22\n", output[0]
       end
     end
   end
@@ -113,7 +113,7 @@ class TestMainPipe < Minitest::Test
           ARGV.replace(original_argv)
         end
 
-        assert_equal " 0  0  0\n", output[0]
+        assert_equal "0 0 0\n", output[0]
       end
     end
   end
