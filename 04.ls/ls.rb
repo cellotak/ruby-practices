@@ -139,8 +139,8 @@ def output_default_format(file_names)
   row_count.times do |row_index|
     col_count.times do |col_index|
       # file_names_tableの行と列が逆で保存されているので、col_indexとrow_indexを入れ替えて出力させている
-      target_file_name = file_names_table[col_index][row_index]
-      print ljust_multibyte_chars(target_file_name, widths[col_index])
+      target_file_name = file_names_table.dig(col_index, row_index)
+      print target_file_name&.ljust(widths[col_index]) if target_file_name
     end
     print "\n"
   end
