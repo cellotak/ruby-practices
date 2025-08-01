@@ -7,16 +7,22 @@ require 'etc'
 MAX_COL_COUNT = 3
 SPACE_WIDTH = 2
 
-FILE_TYPE_LIST = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
-DETAILS_OUTPUT_ORDER = %i[stat_mode nlink username groupname size ctime].freeze
-RJUST_LIST = %i[nlink size].freeze
+FILE_TYPES = { '01' => 'p', '02' => 'c', '04' => 'd', '06' => 'b', '10' => '-', '12' => 'l', '14' => 's' }.freeze
+DETAILS_KEYS = { stat_mode: :left, nlink: :right, username: :left, groupname: :left, size: :right, ctime: :left, file_name: :left }.freeze
 
 def main
-  options, directory_paths = parse_options(ARGV)
-  # directory_pathsには複数のpathを指定することは許容しているが、現時点でファイル名を表示するのは1番目に指定したディレクトリのみにしている。
-  directory_path = directory_paths[0] || './'
-  file_names = fetch_file_names(directory_path, options)
-  output(file_names, directory_path, options)
+  options, paths = parse_options(ARGV)
+  # pathsには複数のpathを指定することは許容しているが、ファイル名を表示するのは1番目に指定したディレクトリorファイルのみにしている。
+  path = paths[0] || './'
+  if File.directory?(path)
+    file_names = fetch_file_names(path, options)
+    output(file_names, path, options)
+  else
+    file_path = File.basename(path)
+    file_names = [file_path]
+    directory_path = File.dirname(path)
+    output(file_names, directory_path, options)
+  end
 end
 
 def parse_options(argv)
@@ -47,39 +53,35 @@ def output(file_names, directory_path, options)
 end
 
 def output_long_listing_format(file_names, directory_path)
-  puts "total #{calc_block_count_total(file_names, directory_path)}"
-
   details_by_file_name = build_details_by_file_name(file_names, directory_path)
+
+  puts "total #{calc_block_count_total(details_by_file_name)}"
 
   max_width_by_detail = calc_max_width_by_detail(details_by_file_name)
 
-  file_names.each do |file_name|
-    details = details_by_file_name[file_name]
-
-    DETAILS_OUTPUT_ORDER.each do |key|
-      if RJUST_LIST.include?(key)
-        print details[key].rjust(max_width_by_detail[key])
-      else
-        print details[key].ljust(max_width_by_detail[key])
-      end
+  details_by_file_name.each do |details|
+    DETAILS_KEYS.each do |key, align|
+      value = details[key]
+      width = max_width_by_detail[key]
+      print(align == :right ? value.rjust(width) : value.ljust(width))
       print ' '
     end
-    puts file_name
+    print "\n"
   end
 end
 
-def calc_block_count_total(file_names, directory_path)
-  file_names.map do |file_name|
-    file_path = "#{directory_path}/#{file_name}"
-    File.stat(file_path).blocks
-  end.sum
+def calc_block_count_total(details_by_file_name)
+  details_by_file_name.sum do |details|
+    details[:blocks]
+  end
 end
 
 def build_details_by_file_name(file_names, directory_path)
-  file_names.to_h do |file_name|
+  file_names.map do |file_name|
     stat = File.stat("#{directory_path}/#{file_name}")
     details = convert_stat_to_details(stat)
-    [file_name, details]
+    details[:file_name] = file_name
+    details
   end
 end
 
@@ -90,13 +92,14 @@ def convert_stat_to_details(stat)
     username: Etc.getpwuid(stat.uid).name,
     groupname: Etc.getgrgid(stat.gid).name,
     size: stat.size.to_s,
-    ctime: stat.ctime.strftime('%b %e %H:%M')
+    ctime: stat.ctime.strftime('%b %e %H:%M'),
+    blocks: stat.blocks
   }
 end
 
 def convert_stat_mode_to_str(stat_mode)
   file_type_code = format('%06o', stat_mode).slice(0..1)
-  file_type_char = FILE_TYPE_LIST[file_type_code]
+  file_type_char = FILE_TYPES[file_type_code]
 
   permission_code = format('%06o', stat_mode).slice(3..5)
   permission_str = convert_permission_code_to_str(permission_code)
@@ -119,8 +122,8 @@ def convert_permission_code_to_str(permission_code)
 end
 
 def calc_max_width_by_detail(details_by_file_name)
-  DETAILS_OUTPUT_ORDER.to_h do |key|
-    widths_by_detail = details_by_file_name.map { |_file_name, details| details[key].length }
+  DETAILS_KEYS.to_h do |key|
+    widths_by_detail = details_by_file_name.map { |details| calc_display_length(details[key]) }
     [key, widths_by_detail.max]
   end
 end
@@ -132,8 +135,7 @@ def output_default_format(file_names)
   # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
   # NOTE: file_names_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されている
   file_names_table = file_names.each_slice(row_count).to_a
-  widths = file_names_table.map { |col| col.map(&:size).max + SPACE_WIDTH }
-
+  widths = file_names_table.map { |col| col.map { |file_name| calc_display_length(file_name) }.max + SPACE_WIDTH }
   row_count.times do |row_index|
     col_count.times do |col_index|
       # file_names_tableの行と列が逆で保存されているので、col_indexとrow_indexを入れ替えて出力させている
@@ -142,6 +144,17 @@ def output_default_format(file_names)
     end
     print "\n"
   end
+end
+
+def calc_display_length(file_name)
+  file_name.chars.sum { |char| char.bytesize == 1 ? 1 : 2 }
+end
+
+def ljust_multibyte_chars(ljust_target, width)
+  return nil if ljust_target.nil?
+
+  adjusted_width = width - (calc_display_length(ljust_target) - ljust_target.length)
+  ljust_target.ljust(adjusted_width)
 end
 
 main
