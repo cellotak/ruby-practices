@@ -99,15 +99,10 @@ end
 
 def output_format(count_stats:, options:, file_path:, max_width:)
   output = []
+  option_mapping = [%i[l lines], %i[w words], %i[c bytes]]
 
-  if options.empty?
-    output << count_stats[:lines].to_s.rjust(max_width)
-    output << count_stats[:words].to_s.rjust(max_width)
-    output << count_stats[:bytes].to_s.rjust(max_width)
-  else
-    output << count_stats[:lines].to_s.rjust(max_width) if options[:l]
-    output << count_stats[:words].to_s.rjust(max_width) if options[:w]
-    output << count_stats[:bytes].to_s.rjust(max_width) if options[:c]
+  option_mapping.each do |option_key, stat_key|
+    output << count_stats[stat_key].to_s.rjust(max_width) if options[option_key] || options.empty?
   end
 
   output << file_path if file_path
