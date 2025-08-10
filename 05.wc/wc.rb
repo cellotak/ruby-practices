@@ -84,17 +84,15 @@ def read_and_count_file(file_path:)
 end
 
 def calculate_max_width(file_info_list:, total_stats:)
-  all_values = []
+  return 0 if file_info_list.empty?
 
-  # 各ファイルの統計情報から「すべての」値を収集（オプションに関係なく）
-  file_info_list.each do |file_info|
-    count_stats = file_info[:stats]
-    all_values.concat([count_stats[:lines], count_stats[:words], count_stats[:bytes]])
+  # 表示されるかどうかにかかわらず、statsのうち最大幅となるものに合わせて右揃えする仕様にしている。
+  # 3つのstatsのうちbytesが必ず最大幅となる。複数ファイルの場合はtotalのbytesが最大、単一ファイルの場合はそのファイルのbytesが最大となる。
+  if file_info_list.size > 1
+    total_stats[:bytes].to_s.length
+  else
+    file_info_list.first[:stats][:bytes].to_s.length
   end
-
-  all_values.concat([total_stats[:lines], total_stats[:words], total_stats[:bytes]]) if total_stats && file_info_list.size > 1
-
-  all_values.map(&:to_s).map(&:length).max
 end
 
 def output_format(count_stats:, options:, file_path:, max_width:)
