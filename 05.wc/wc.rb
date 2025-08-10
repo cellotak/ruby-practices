@@ -36,14 +36,10 @@ def parse_options(argv:)
 end
 
 def count_content(content:)
-  lines = content.count("\n")
-  words = content.split.size
-  bytes = content.bytesize
-
   {
-    lines:,
-    words:,
-    bytes:
+    lines: content.count("\n"),
+    words: content.split.size,
+    bytes: content.bytesize
   }
 end
 
@@ -75,7 +71,7 @@ def read_and_count_file(file_path:)
 end
 
 def calculate_max_width(file_info_list:, total_stats:)
-  return 0 if file_info_list.empty?
+  return if file_info_list.empty?
 
   # 表示されるかどうかにかかわらず、statsのうち最大幅となるものに合わせて右揃えする仕様にしている。
   # 3つのstatsのうちbytesが必ず最大幅となる。複数ファイルの場合はtotalのbytesが最大、単一ファイルの場合はそのファイルのbytesが最大となる。
