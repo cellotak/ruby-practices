@@ -13,20 +13,16 @@ def main
 
     # file_pathにnilを渡すことで、ファイル名を出力しない
     output_format(count_stats:, options:, file_path: nil, max_width:)
-    return
+  else
+    file_info_list, total_stats = collect_file_stats(file_paths:)
+    max_width = calculate_max_width(file_info_list:, total_stats:)
+
+    file_info_list.each do |file_info|
+      output_format(count_stats: file_info[:stats], options:, file_path: file_info[:path], max_width:)
+    end
+
+    output_format(count_stats: total_stats, options:, file_path: 'total', max_width:) if file_info_list.size > 1
   end
-
-  file_info_list, total_stats = collect_file_stats(file_paths:)
-
-  max_width = calculate_max_width(file_info_list:, total_stats:)
-
-  file_info_list.each do |file_info|
-    output_format(count_stats: file_info[:stats], options:, file_path: file_info[:path], max_width:)
-  end
-
-  return if file_info_list.size <= 1
-
-  output_format(count_stats: total_stats, options:, file_path: 'total', max_width:)
 end
 
 def parse_options(argv:)
