@@ -10,7 +10,7 @@ class TestCalculateMaxWidth < Minitest::Test
     ]
     total_stats = { lines: 2, words: 6, bytes: 27 }
 
-    result = calculate_max_width(file_info_list:, total_stats:)
+    result = calculate_max_width(file_info_list, total_stats)
     assert_equal 2, result
   end
 
@@ -21,7 +21,7 @@ class TestCalculateMaxWidth < Minitest::Test
     ]
     total_stats = { lines: 50, words: 140, bytes: 1001 }
 
-    result = calculate_max_width(file_info_list:, total_stats:)
+    result = calculate_max_width(file_info_list, total_stats)
     assert_equal 4, result
   end
 end

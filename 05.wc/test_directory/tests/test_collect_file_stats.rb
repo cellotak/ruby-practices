@@ -9,7 +9,7 @@ class TestCollectFileStats < Minitest::Test
   end
 
   def test_single_file
-    file_info_list, total_stats = collect_file_stats(file_paths: [File.join(@test_dir, 'file1.txt')])
+    file_info_list, total_stats = collect_file_stats([File.join(@test_dir, 'file1.txt')])
 
     assert_equal 1, file_info_list.size
     assert_equal({ lines: 2, words: 2, bytes: 12 }, file_info_list[0][:stats])
@@ -18,7 +18,7 @@ class TestCollectFileStats < Minitest::Test
   end
 
   def test_multiple_files
-    file_info_list, total_stats = collect_file_stats(file_paths: [File.join(@test_dir, 'file1.txt'), File.join(@test_dir, 'file2.txt')])
+    file_info_list, total_stats = collect_file_stats([File.join(@test_dir, 'file1.txt'), File.join(@test_dir, 'file2.txt')])
 
     assert_equal 2, file_info_list.size
     assert_equal({ lines: 2, words: 2, bytes: 12 }, file_info_list[0][:stats])

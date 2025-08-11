@@ -11,7 +11,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal " 2  6 27 test.txt\n", output[0]
@@ -24,7 +24,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal " 2 test.txt\n", output[0]
@@ -37,7 +37,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal " 6 test.txt\n", output[0]
@@ -50,7 +50,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal "27 test.txt\n", output[0]
@@ -63,7 +63,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal " 2  6 test.txt\n", output[0]
@@ -76,7 +76,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 3
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal "123 456 789 large.txt\n", output[0]
@@ -89,7 +89,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 2
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal " 2  6 27\n", output[0]
@@ -102,7 +102,7 @@ class TestOutputFormat < Minitest::Test
     max_width = 5
 
     output = capture_io do
-      output_format(count_stats:, options:, file_path:, max_width:)
+      output_format(count_stats, options, file_path, max_width)
     end
 
     assert_equal "    1     2     3 test.txt\n", output[0]
