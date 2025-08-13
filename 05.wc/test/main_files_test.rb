@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestMainFiles < Minitest::Test
+class MainFilesTest < Minitest::Test
   def setup
-    @test_dir = File.dirname(__dir__)
+    @test_dir = File.join(__dir__, 'fixtures')
   end
 
   def test_multiple_files_with_total

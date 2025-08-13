@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestMainPipe < Minitest::Test
+class MainPipeTest < Minitest::Test
   def test_count_ls_output_via_pipe
     ls_output = <<~OUTPUT
       total 16

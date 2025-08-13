@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestCountContent < Minitest::Test
+class CountContentTest < Minitest::Test
   def test_basic_content
     content = "hello world\nthis is a test\n"
     result = count_content(content)

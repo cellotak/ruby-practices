@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestParseOptions < Minitest::Test
+class ParseOptionsTest < Minitest::Test
   def test_with_l_option
     options, file_paths = parse_options(['-l'])
     assert_equal({ l: true }, options)

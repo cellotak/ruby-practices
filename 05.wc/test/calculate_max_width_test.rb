@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestCalculateMaxWidth < Minitest::Test
+class CalculateMaxWidthTest < Minitest::Test
   def test_single_file
     file_info_list = [
       { stats: { lines: 2, words: 6, bytes: 27 }, path: 'file1.txt' }

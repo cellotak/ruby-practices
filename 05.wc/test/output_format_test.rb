@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../../wc'
+require_relative '../wc'
 
-class TestOutputFormat < Minitest::Test
+class OutputFormatTest < Minitest::Test
   def test_no_options
     count_stats = { lines: 2, words: 6, bytes: 27 }
     options = {}
