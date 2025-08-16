@@ -61,8 +61,11 @@ def collect_file_stats(file_paths)
 end
 
 def read_and_count_file(file_path)
-  if !File.exist?(file_path) || File.directory?(file_path)
+  if !File.exist?(file_path)
     warn "wc: #{file_path}: No such file or directory"
+    return
+  elsif File.directory?(file_path)
+    warn "wc: #{file_path}: Is a directory"
     return
   end
 

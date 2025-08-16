@@ -43,6 +43,6 @@ class ReadAndCountFileTest < Minitest::Test
       assert_nil result
     end
 
-    assert_match(/wc: #{Regexp.escape(@test_dir)}: No such file or directory/, stderr)
+    assert_match(/wc: #{Regexp.escape(@test_dir)}: Is a directory/, stderr)
   end
 end
