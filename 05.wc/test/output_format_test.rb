@@ -19,7 +19,7 @@ class OutputFormatTest < Minitest::Test
 
   def test_with_l_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
-    options = { l: true }
+    options = { lines: true }
     file_path = 'test.txt'
     max_width = 2
 
@@ -32,7 +32,7 @@ class OutputFormatTest < Minitest::Test
 
   def test_with_w_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
-    options = { w: true }
+    options = { words: true }
     file_path = 'test.txt'
     max_width = 2
 
@@ -45,7 +45,7 @@ class OutputFormatTest < Minitest::Test
 
   def test_with_c_option
     count_stats = { lines: 2, words: 6, bytes: 27 }
-    options = { c: true }
+    options = { bytes: true }
     file_path = 'test.txt'
     max_width = 2
 
@@ -58,7 +58,7 @@ class OutputFormatTest < Minitest::Test
 
   def test_with_multiple_options
     count_stats = { lines: 2, words: 6, bytes: 27 }
-    options = { l: true, w: true }
+    options = { lines: true, words: true }
     file_path = 'test.txt'
     max_width = 2
 

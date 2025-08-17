@@ -28,9 +28,9 @@ end
 def parse_options(argv)
   opt = OptionParser.new
   options = {}
-  opt.on('-l') { |v| options[:l] = v }
-  opt.on('-w') { |v| options[:w] = v }
-  opt.on('-c') { |v| options[:c] = v }
+  opt.on('-l') { |v| options[:lines] = v }
+  opt.on('-w') { |v| options[:words] = v }
+  opt.on('-c') { |v| options[:bytes] = v }
   file_paths = opt.parse(argv)
   [options, file_paths]
 end
@@ -87,10 +87,12 @@ end
 
 def output_format(count_stats, options, file_path, max_width)
   output = []
-  option_mapping = [%i[l lines], %i[w words], %i[c bytes]]
 
-  option_mapping.each do |option_key, stat_key|
-    output << count_stats[stat_key].to_s.rjust(max_width) if options[option_key] || options.empty?
+  [:lines, :words, :bytes].each do |key|
+    if options[key] || options.empty?
+      rjusted_value = count_stats[key].to_s.rjust(max_width)
+      output << rjusted_value
+    end
   end
 
   output << file_path if file_path
