@@ -8,21 +8,19 @@ def main
 
   # パイプで接続した場合 $stdin.tty? は false になる
   if file_paths.empty? && !$stdin.tty?
-    count_stats = count_content($stdin.read)
-    max_width = calculate_max_width([{ stats: count_stats }], nil)
-
-    # file_pathにnilを渡すことで、ファイル名を出力しない
-    output_format(count_stats, options, nil, max_width)
+    file_stats = count_content($stdin.read)
+    file_stats[:file_path] = nil
+    file_stats_list = [file_stats]
+    total_stats = nil
   else
-    file_info_list, total_stats = collect_file_stats(file_paths)
-    max_width = calculate_max_width(file_info_list, total_stats)
-
-    file_info_list.each do |file_info|
-      output_format(file_info[:stats], options, file_info[:path], max_width)
-    end
-
-    output_format(total_stats, options, 'total', max_width) if file_info_list.size > 1
+    file_stats_list, total_stats = collect_file_stats(file_paths)
   end
+
+  max_width = calculate_max_width(file_stats_list, total_stats)
+
+  file_stats_list.each { |stats| output_format(stats, options, max_width) }
+
+  output_format(total_stats, options, max_width) if total_stats
 end
 
 def parse_options(argv)
@@ -45,17 +43,21 @@ end
 
 def collect_file_stats(file_paths)
   file_info_list = []
-  total_stats = { lines: 0, words: 0, bytes: 0 }
+  total_stats = { lines: 0, words: 0, bytes: 0, file_path: 'total' }
 
   file_paths.each do |file_path|
     file_stats = read_and_count_file(file_path)
     next unless file_stats
 
-    file_info_list << { stats: file_stats, path: file_path }
+    file_stats[:file_path] = file_path
+    file_info_list << file_stats
+
     total_stats[:lines] += file_stats[:lines]
     total_stats[:words] += file_stats[:words]
     total_stats[:bytes] += file_stats[:bytes]
   end
+
+  total_stats = nil if file_info_list.size <= 1
 
   [file_info_list, total_stats]
 end
@@ -73,29 +75,25 @@ def read_and_count_file(file_path)
   count_content(content)
 end
 
-def calculate_max_width(file_info_list, total_stats)
-  return if file_info_list.empty?
+def calculate_max_width(file_stats_list, total_stats)
+  return if file_stats_list.empty?
 
   # 表示されるかどうかにかかわらず、statsのうち最大幅となるものに合わせて右揃えする仕様にしている。
   # 3つのstatsのうちbytesが必ず最大幅となる。複数ファイルの場合はtotalのbytesが最大、単一ファイルの場合はそのファイルのbytesが最大となる。
-  if file_info_list.size > 1
+  if total_stats
     total_stats[:bytes].to_s.length
   else
-    file_info_list.first[:stats][:bytes].to_s.length
+    file_stats_list.first[:bytes].to_s.length
   end
 end
 
-def output_format(count_stats, options, file_path, max_width)
-  output = []
-
-  [:lines, :words, :bytes].each do |key|
-    if options[key] || options.empty?
-      rjusted_value = count_stats[key].to_s.rjust(max_width)
-      output << rjusted_value
-    end
+def output_format(file_stats, options, max_width)
+  output = %i[lines words bytes].filter_map do |key|
+    file_stats[key].to_s.rjust(max_width) if options[key] || options.empty?
   end
 
-  output << file_path if file_path
+  # パイプで接続した場合、file_stats[:file_path] は nil になるため、file_pathは出力しない
+  output << file_stats[:file_path] if file_stats[:file_path]
   puts output.join(' ')
 end
 
