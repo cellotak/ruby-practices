@@ -7,7 +7,7 @@ def main
   options, file_paths = parse_options(ARGV)
 
   # パイプで接続した場合 $stdin.tty? は false になる
-  stats_list, total_stats = (file_paths.empty? && !$stdin.tty?) ? collect_stdin_stats : collect_file_stats(file_paths)
+  stats_list, total_stats = file_paths.empty? && !$stdin.tty? ? collect_stdin_stats : collect_file_stats(file_paths)
 
   max_width = calculate_max_width(stats_list, total_stats)
 
@@ -73,7 +73,7 @@ def build_stats(content, file_path = nil)
     lines: content.count("\n"),
     words: content.split.size,
     bytes: content.bytesize,
-    file_path: file_path
+    file_path:
   }
 end
 

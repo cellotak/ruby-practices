@@ -34,8 +34,8 @@ class ReadAndCountFileTest < Minitest::Test
 
   def test_nonexistent_file
     _stdout, stderr = capture_io do
-    result = read_and_count_file('nonexistent.txt')
-    assert_nil result
+      result = read_and_count_file('nonexistent.txt')
+      assert_nil result
     end
 
     assert_match(/wc: nonexistent.txt: No such file or directory/, stderr)
@@ -43,8 +43,8 @@ class ReadAndCountFileTest < Minitest::Test
 
   def test_directory
     _stdout, stderr = capture_io do
-    result = read_and_count_file(@test_dir)
-    assert_nil result
+      result = read_and_count_file(@test_dir)
+      assert_nil result
     end
 
     assert_match(/wc: #{Regexp.escape(@test_dir)}: Is a directory/, stderr)
