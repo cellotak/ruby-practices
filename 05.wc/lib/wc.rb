@@ -82,11 +82,8 @@ def calculate_max_width(stats_list, total_stats)
 
   # 表示されるかどうかにかかわらず、statsのうち最大幅となるものに合わせて右揃えする仕様にしている。
   # 3つのstatsのうちbytesが必ず最大幅となる。複数ファイルの場合はtotalのbytesが最大、単一ファイルの場合はそのファイルのbytesが最大となる。
-  if stats_list.size > 1
-    total_stats[:bytes].to_s.length
-  else
-    stats_list.first[:bytes].to_s.length
-  end
+  stat = stats_list.size > 1 ? total_stats : stats_list.first
+  stat[:bytes].to_s.length
 end
 
 def output_format(stats, options, max_width)
