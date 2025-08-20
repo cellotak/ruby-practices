@@ -27,7 +27,7 @@ def parse_options(argv)
 end
 
 def collect_stdin_stats
-  stdin_stats = count_content($stdin.read)
+  stdin_stats = build_stats($stdin.read)
   stdin_stats[:file_path] = nil
   stdin_stats_list = [stdin_stats]
   total_stats = nil
@@ -43,7 +43,6 @@ def collect_file_stats(file_paths)
     file_stats = read_and_count_file(file_path)
     next unless file_stats
 
-    file_stats[:file_path] = file_path
     file_stats_list << file_stats
 
     total_stats[:lines] += file_stats[:lines]
@@ -66,14 +65,15 @@ def read_and_count_file(file_path)
   end
 
   content = File.read(file_path)
-  count_content(content)
+  build_stats(content, file_path)
 end
 
-def count_content(content)
+def build_stats(content, file_path = nil)
   {
     lines: content.count("\n"),
     words: content.split.size,
-    bytes: content.bytesize
+    bytes: content.bytesize,
+    file_path: file_path
   }
 end
 
