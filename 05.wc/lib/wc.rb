@@ -13,7 +13,7 @@ def main
 
   stats_list.each { |stats| output_format(stats, options, max_width) }
 
-  output_format(total_stats, options, max_width) if total_stats
+  output_format(total_stats, options, max_width) if stats_list.size > 1
 end
 
 def parse_options(argv)
@@ -82,7 +82,7 @@ def calculate_max_width(stats_list, total_stats)
 
   # 表示されるかどうかにかかわらず、statsのうち最大幅となるものに合わせて右揃えする仕様にしている。
   # 3つのstatsのうちbytesが必ず最大幅となる。複数ファイルの場合はtotalのbytesが最大、単一ファイルの場合はそのファイルのbytesが最大となる。
-  if total_stats
+  if stats_list.size > 1
     total_stats[:bytes].to_s.length
   else
     stats_list.first[:bytes].to_s.length
