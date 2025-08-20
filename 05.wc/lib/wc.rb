@@ -26,14 +26,6 @@ def parse_options(argv)
   [options, file_paths]
 end
 
-def count_content(content)
-  {
-    lines: content.count("\n"),
-    words: content.split.size,
-    bytes: content.bytesize
-  }
-end
-
 def collect_stdin_stats
   stdin_stats = count_content($stdin.read)
   stdin_stats[:file_path] = nil
@@ -75,6 +67,14 @@ def read_and_count_file(file_path)
 
   content = File.read(file_path)
   count_content(content)
+end
+
+def count_content(content)
+  {
+    lines: content.count("\n"),
+    words: content.split.size,
+    bytes: content.bytesize
+  }
 end
 
 def calculate_max_width(stats_list, total_stats)
