@@ -87,13 +87,13 @@ def calculate_max_width(stats_list, total_stats)
 end
 
 def output_format(stats, options, max_width)
-  output = %i[lines words bytes].filter_map do |key|
+  columns = %i[lines words bytes].map do |key|
     stats[key].to_s.rjust(max_width) if options[key] || options.empty?
   end
 
   # パイプで接続した場合、stats[:file_path] は nil になるため、file_pathは出力しない
-  output << stats[:file_path] if stats[:file_path]
-  puts output.join(' ')
+  columns << stats[:file_path]
+  puts columns.compact.join(' ')
 end
 
 main
