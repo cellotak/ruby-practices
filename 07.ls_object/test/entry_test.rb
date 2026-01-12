@@ -30,7 +30,7 @@ class EntryTest < Minitest::Test
   end
 
   def test_strict_stats
-    assert_equal '5', @entry.size
+    assert_equal '5', @entry.filesize
     assert_equal '-rw-r--r--', @entry.mode_string
   end
 
@@ -42,7 +42,7 @@ class EntryTest < Minitest::Test
     current_user = Etc.getpwuid(Process.uid).name
     current_group = Etc.getgrgid(Process.gid).name
 
-    assert_equal current_user, @entry.owner_name
-    assert_equal current_group, @entry.group_name
+    assert_equal current_user, @entry.owner
+    assert_equal current_group, @entry.group
   end
 end

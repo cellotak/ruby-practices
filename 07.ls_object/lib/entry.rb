@@ -25,15 +25,15 @@ class Entry
     stat.nlink.to_s
   end
 
-  def size
+  def filesize
     stat.size.to_s
   end
 
-  def owner_name
+  def owner
     Etc.getpwuid(stat.uid).name
   end
 
-  def group_name
+  def group
     Etc.getgrgid(stat.gid).name
   end
 
