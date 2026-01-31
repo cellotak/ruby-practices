@@ -5,6 +5,7 @@ require_relative '../lib/options'
 require_relative '../lib/entry'
 require_relative '../lib/entry_list'
 require_relative '../lib/long_formatter'
+require_relative '../lib/default_formatter'
 
 options = Options.new(ARGV)
 
@@ -35,7 +36,7 @@ if target_files.any?
   if options.long_format?
     LongFormatter.new.format(list)
   else
-    puts list.map(&:name).join('  ')
+    DefaultFormatter.new.format(list)
   end
 end
 
@@ -54,7 +55,7 @@ target_dirs.each_with_index do |dir_path, index|
   if options.long_format?
     LongFormatter.new.format(list)
   else
-    puts list.map(&:name).join('  ')
+    DefaultFormatter.new.format(list)
   end
 
   puts if index < target_dirs.size - 1

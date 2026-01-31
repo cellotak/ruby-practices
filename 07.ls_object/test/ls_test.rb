@@ -5,7 +5,6 @@ require 'fileutils'
 require 'open3'
 
 class LsCommandTest < Minitest::Test
-  # テスト用のサンドボックス（作業場）
   SANDBOX_DIR = 'test/sandbox'
 
   def setup
