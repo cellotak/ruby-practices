@@ -9,6 +9,25 @@ class EntryList
     @entries = entries
   end
 
+  def self.generate_from_directory(dir_path, options)
+    filenames = Dir.entries(dir_path).sort
+
+    filenames = options.reverse? ? filenames.reverse : filenames
+
+    filenames.reject! { |name| name.start_with?('.') } unless options.all?
+
+    entries = filenames.map { |name| Entry.new(dir_path, name) }
+
+    new(entries)
+  end
+
+  def self.generate_from_files(file_paths)
+    entries = file_paths.map do |path|
+      Entry.new(File.dirname(path), File.basename(path))
+    end
+    new(entries)
+  end
+
   def total_blocks
     @entries.sum(&:blocks)
   end

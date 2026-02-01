@@ -9,29 +9,25 @@ require_relative '../lib/default_formatter'
 
 options = Options.new(ARGV)
 
-target_paths = options.paths.empty? ? ['.'] : options.paths
+paths = options.paths.empty? ? ['.'] : options.paths
 
-target_files = []
-target_dirs = []
+files = []
+dirs = []
 
-sorted_paths = options.reverse? ? target_paths.sort.reverse : target_paths.sort
+sorted_paths = options.reverse? ? paths.sort.reverse : paths.sort
 
 sorted_paths.each do |path|
   if File.file?(path)
-    target_files << path
+    files << path
   elsif File.directory?(path)
-    target_dirs << path
+    dirs << path
   elsif !File.exist?(path)
     warn "ls: cannot access '#{path}': No such file or directory"
   end
 end
 
-if target_files.any?
-  entries = target_files.map do |path|
-    Entry.new(File.dirname(path), File.basename(path))
-  end
-
-  list = EntryList.new(entries)
+if files.any?
+  list = EntryList.generate_from_files(files)
 
   if options.long_format?
     LongFormatter.new.format(list)
@@ -40,17 +36,13 @@ if target_files.any?
   end
 end
 
-puts if !target_files.empty? && !target_dirs.empty?
+puts if !files.empty? && !dirs.empty?
 
-target_dirs.each_with_index do |dir_path, index|
-  puts "#{dir_path}:" if target_paths.size > 1
+dirs.each_with_index do |dir_path, index|
+  puts "#{dir_path}:" if paths.size > 1
+  puts "#{dir_path}:" if paths.size > 1
 
-  filenames = options.reverse? ? Dir.entries(dir_path).sort.reverse : Dir.entries(dir_path).sort
-
-  filenames.reject! { |name| name.start_with?('.') } unless options.all?
-
-  entries = filenames.map { |name| Entry.new(dir_path, name) }
-  list = EntryList.new(entries)
+  list = EntryList.generate_from_directory(dir_path, options)
 
   if options.long_format?
     LongFormatter.new.format(list)
@@ -58,5 +50,5 @@ target_dirs.each_with_index do |dir_path, index|
     DefaultFormatter.new.format(list)
   end
 
-  puts if index < target_dirs.size - 1
+  puts if index < dirs.size - 1
 end
