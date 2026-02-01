@@ -18,8 +18,8 @@ class DefaultFormatter
 
     # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
     # 一方entries_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されているためcol_indexとrow_indexを入れ替えてformatしている
-    row_count.times.map do |row_index|
-      row_entries = col_count.times.map { |col_index| entries_table.dig(col_index, row_index) }
+    Array.new(row_count) do |row_index|
+      row_entries = Array.new(col_count) { |col_index| entries_table.dig(col_index, row_index) }
 
       build_line(row_entries, widths)
     end.join("\n")
