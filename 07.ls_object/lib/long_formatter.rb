@@ -12,14 +12,16 @@ class LongFormatter
   }.freeze
 
   def format(entry_list)
-    puts "total #{entry_list.total_blocks}"
+    lines = []
+    lines << "total #{entry_list.total_blocks}"
 
     widths = entry_list.max_widths
 
     entry_list.entries.each do |entry|
-      line = build_line(entry, widths)
-      puts line
+      lines << build_line(entry, widths)
     end
+
+    lines.join("\n")
   end
 
   private

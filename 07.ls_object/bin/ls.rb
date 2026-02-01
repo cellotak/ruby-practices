@@ -30,7 +30,8 @@ end
 
 if files.any?
   list = EntryList.generate_from_files(files)
-  formatter.format(list)
+  output = formatter.format(list)
+  puts output unless output.empty?
 end
 
 puts if !files.empty? && !dirs.empty?
@@ -39,7 +40,8 @@ dirs.each_with_index do |dir_path, index|
   puts "#{dir_path}:" if paths.size > 1
 
   list = EntryList.generate_from_directory(dir_path, options)
-  formatter.format(list)
+  output = formatter.format(list)
+  puts output unless output.empty?
 
   puts if index < dirs.size - 1
 end

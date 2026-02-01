@@ -19,12 +19,10 @@ class LongFormatterTest < Minitest::Test
   end
 
   def test_format
-    out, _err = capture_io do
-      @formatter.format(@list)
-    end
+    output = @formatter.format(@list)
 
-    assert_match(/^total 3/, out)
-    assert_match(/-rw-r--r--\s+1\s+usr\s+grp\s+100\s+Jan\s+1\s00:00\s+a.txt/, out)
-    assert_match(/drwxr-xr-x\s+2\s+root\s+wheel\s+2000\s+Dec 31 23:59\s+long_name.txt/, out)
+    assert_match(/^total 3/, output)
+    assert_match(/-rw-r--r--\s+1\s+usr\s+grp\s+100\s+Jan\s+1\s00:00\s+a.txt/, output)
+    assert_match(/drwxr-xr-x\s+2\s+root\s+wheel\s+2000\s+Dec 31 23:59\s+long_name.txt/, output)
   end
 end

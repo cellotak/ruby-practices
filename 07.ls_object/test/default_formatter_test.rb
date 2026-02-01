@@ -15,11 +15,9 @@ class DefaultFormatterTest < Minitest::Test
   end
 
   def test_format
-    out, _err = capture_io do
-      @formatter.format(@list)
-    end
+    output = @formatter.format(@list)
 
-    rows = out.split("\n")
+    rows = output.split("\n")
 
     # 3列固定なので、a, c, e が1行目に並ぶはず
     assert_match(/a\.txt\s+c\.txt\s+e\.txt/, rows[0])
