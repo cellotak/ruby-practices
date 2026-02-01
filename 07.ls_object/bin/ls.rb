@@ -9,6 +9,8 @@ require_relative '../lib/default_formatter'
 
 options = Options.new(ARGV)
 
+formatter = options.long_format? ? LongFormatter.new : DefaultFormatter.new
+
 paths = options.paths.empty? ? ['.'] : options.paths
 
 files = []
@@ -28,27 +30,16 @@ end
 
 if files.any?
   list = EntryList.generate_from_files(files)
-
-  if options.long_format?
-    LongFormatter.new.format(list)
-  else
-    DefaultFormatter.new.format(list)
-  end
+  formatter.format(list)
 end
 
 puts if !files.empty? && !dirs.empty?
 
 dirs.each_with_index do |dir_path, index|
   puts "#{dir_path}:" if paths.size > 1
-  puts "#{dir_path}:" if paths.size > 1
 
   list = EntryList.generate_from_directory(dir_path, options)
-
-  if options.long_format?
-    LongFormatter.new.format(list)
-  else
-    DefaultFormatter.new.format(list)
-  end
+  formatter.format(list)
 
   puts if index < dirs.size - 1
 end
