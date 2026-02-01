@@ -28,12 +28,9 @@ class DefaultFormatter
   private
 
   def build_line(row_entries, widths)
-    line = +''
-
-    row_entries.each_with_index do |entry, col_index|
-      line << entry.name.ljust(widths[col_index]) if entry
-    end
-
-    line.rstrip
+    row_entries.zip(widths)
+               .filter_map { |entry, width| entry&.name&.ljust(width) }
+               .join
+               .rstrip
   end
 end
