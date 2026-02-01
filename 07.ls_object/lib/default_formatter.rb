@@ -6,7 +6,7 @@ class DefaultFormatter
   SPACE_WIDTH = 2
 
   def format(entry_list)
-    entries = entry_list.to_a
+    entries = entry_list.entries
     return if entries.empty?
 
     row_count = ((entries.size - 1) / MAX_COL_COUNT) + 1

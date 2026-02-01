@@ -16,7 +16,7 @@ class LongFormatter
 
     widths = entry_list.max_widths
 
-    entry_list.each do |entry|
+    entry_list.entries.each do |entry|
       line = build_line(entry, widths)
       puts line
     end

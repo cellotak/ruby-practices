@@ -1,16 +1,12 @@
 # frozen_string_literal: true
 
 class EntryList
-  include Enumerable
+  attr_reader :entries
 
   DETAIL_KEYS = %i[mode_string nlink owner group filesize mtime_string name].freeze
 
   def initialize(entries)
     @entries = entries
-  end
-
-  def each(&block)
-    @entries.each(&block)
   end
 
   def total_blocks
