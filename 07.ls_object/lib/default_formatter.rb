@@ -16,22 +16,24 @@ class DefaultFormatter
 
     widths = entries_table.map { |col| col.map { |entry| entry.name.length }.max + SPACE_WIDTH }
 
-    lines = []
-
     # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
-    # 一方entries_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されているためcol_indexとrow_indexを入れ替えて出力させている。
-    row_count.times do |row_index|
-      line = +''
+    # 一方entries_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されているためcol_indexとrow_indexを入れ替えてformatしている
+    row_count.times.map do |row_index|
+      row_entries = col_count.times.map { |col_index| entries_table.dig(col_index, row_index) }
 
-      col_count.times do |col_index|
-        target_entry = entries_table.dig(col_index, row_index)
+      build_line(row_entries, widths)
+    end.join("\n")
+  end
 
-        line << target_entry.name.ljust(widths[col_index]) if target_entry
-      end
+  private
 
-      lines << line.rstrip
+  def build_line(row_entries, widths)
+    line = +''
+
+    row_entries.each_with_index do |entry, col_index|
+      line << entry.name.ljust(widths[col_index]) if entry
     end
 
-    lines.join("\n")
+    line.rstrip
   end
 end
