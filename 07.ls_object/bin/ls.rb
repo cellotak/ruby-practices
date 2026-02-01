@@ -12,6 +12,14 @@ def main
   formatter = options.long_format? ? LongFormatter.new : DefaultFormatter.new
   paths = options.paths.empty? ? ['.'] : options.paths
 
+  files, dirs = separate_paths(paths, options)
+
+  output_files(files, formatter)
+  output_blank_line_as_separator(files, dirs)
+  output_directories(dirs, formatter, options, paths.size > 1)
+end
+
+def separate_paths(paths, options)
   files = []
   dirs = []
 
@@ -27,16 +35,24 @@ def main
     end
   end
 
-  if files.any?
-    list = EntryList.generate_from_files(files)
-    output = formatter.format(list)
-    puts output unless output.empty?
-  end
+  [files, dirs]
+end
 
+def output_files(files, formatter)
+  return if files.empty?
+
+  list = EntryList.generate_from_files(files)
+  output = formatter.format(list)
+  puts output unless output.empty?
+end
+
+def output_blank_line_as_separator(files, dirs)
   puts if !files.empty? && !dirs.empty?
+end
 
+def output_directories(dirs, formatter, options, print_header)
   dirs.each_with_index do |dir_path, index|
-    puts "#{dir_path}:" if paths.size > 1
+    puts "#{dir_path}:" if print_header
 
     list = EntryList.generate_from_directory(dir_path, options)
     output = formatter.format(list)
