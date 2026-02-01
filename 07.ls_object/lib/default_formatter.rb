@@ -27,6 +27,8 @@ class DefaultFormatter
 
   private
 
+  # @param row_entries [Array<Entry, nil>] その行に表示するEntryの配列 (例: [Entry(a), Entry(c), Entry(e)])
+  # @param widths [Array<Integer>] 各列の幅の配列 (例: [12, 15, 10])
   def build_line(row_entries, widths)
     row_entries.zip(widths)
                .filter_map { |entry, width| entry&.name&.ljust(width) }

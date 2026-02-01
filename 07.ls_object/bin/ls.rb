@@ -4,12 +4,10 @@
 require_relative '../lib/options'
 require_relative '../lib/entry'
 require_relative '../lib/entry_list'
-require_relative '../lib/long_formatter'
-require_relative '../lib/default_formatter'
 
 def main
   options = Options.new(ARGV)
-  formatter = options.long_format? ? LongFormatter.new : DefaultFormatter.new
+  formatter = options.formatter
   paths = options.paths.empty? ? ['.'] : options.paths
 
   files, dirs = separate_paths(paths, options)
@@ -23,7 +21,7 @@ def separate_paths(paths, options)
   files = []
   dirs = []
 
-  sorted_paths = options.reverse? ? paths.sort.reverse : paths.sort
+  sorted_paths = options.sort(paths)
 
   sorted_paths.each do |path|
     if File.file?(path)

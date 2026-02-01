@@ -2,45 +2,76 @@
 
 require 'minitest/autorun'
 require_relative '../lib/options'
+require_relative '../lib/long_formatter'
+require_relative '../lib/default_formatter'
 
 class OptionsTest < Minitest::Test
-  def test_parse_long_format
+  def test_formatter_default
+    argv = []
+    options = Options.new(argv)
+
+    assert_instance_of DefaultFormatter, options.formatter
+  end
+
+  def test_formatter_long
     argv = ['-l']
     options = Options.new(argv)
-    assert options.long_format?
+
+    assert_instance_of LongFormatter, options.formatter
   end
 
-  def test_parse_all
-    argv = ['-a']
+  def test_sort_default
+    argv = []
     options = Options.new(argv)
-    assert options.all?
+    items = %w[b a c]
+
+    assert_equal %w[a b c], options.sort(items)
   end
 
-  def test_parse_reverse
+  def test_sort_reverse
     argv = ['-r']
     options = Options.new(argv)
-    assert options.reverse?
+    items = %w[b a c]
+
+    assert_equal %w[c b a], options.sort(items)
   end
 
-  def test_parse_paths
-    argv = ['/tmp', 'lib']
+  def test_select_visible_entries_default
+    argv = []
     options = Options.new(argv)
+    items = %w[file1 .hidden file2]
 
-    assert_equal ['/tmp', 'lib'], options.paths
+    assert_equal %w[file1 file2], options.select_visible_entries(items)
   end
 
-  def test_parse_mixed
-    argv = ['-l', '/etc', '-a']
+  def test_select_visible_entries_all
+    argv = ['-a']
     options = Options.new(argv)
+    items = %w[file1 .hidden file2]
 
-    assert options.long_format?
-    assert options.all?
-    assert_equal ['/etc'], options.paths
+    assert_equal %w[file1 .hidden file2], options.select_visible_entries(items)
   end
 
-  def test_no_paths
-    argv = ['-l']
+  def test_prepare_filenames_default
+    argv = []
     options = Options.new(argv)
-    assert_empty options.paths
+    items = %w[b .hidden a]
+
+    assert_equal %w[a b], options.prepare_filenames(items)
+  end
+
+  def test_prepare_filenames_all_reverse
+      argv = ['-a', '-r']
+      options = Options.new(argv)
+      items = %w[b .hidden a]
+
+      assert_equal %w[b a .hidden], options.prepare_filenames(items)
+  end
+
+  def test_paths
+    argv = ['-l', '/tmp', 'lib']
+    options = Options.new(argv)
+
+    assert_equal %w[/tmp lib], options.paths
   end
 end
