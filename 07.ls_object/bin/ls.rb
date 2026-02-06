@@ -14,7 +14,9 @@ def main
 
   output_files(files, formatter)
   output_blank_line_as_separator(files, dirs)
-  output_directories(dirs, formatter, options, paths.size > 1)
+
+  should_print_header = paths.size > 1
+  output_directories(dirs, formatter, options, should_print_header)
 end
 
 def separate_paths(paths, options)
