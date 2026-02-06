@@ -18,7 +18,8 @@ class Options
   end
 
   def sort(items)
-    reverse? ? items.sort.reverse : items.sort
+    sorted = items.sort_by { |item| item.downcase }
+    reverse? ? sorted.reverse : sorted
   end
 
   def select_visible_entries(items)
