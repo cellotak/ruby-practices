@@ -9,7 +9,7 @@ class LongFormatterTest < Minitest::Test
 
   def setup
     # 各属性が最大幅ではないentry (paddingされる)
-    not_max_width_entry = StubEntry.new('a.txt', '100', '1', 1, 'usr', 'grp', '-rw-r--r--', 'Jan  1 00:00')
+    not_max_width_entry = StubEntry.new('a.txt', '100', '1', 2, 'usr', 'grp', '-rw-r--r--', 'Jan  1 00:00')
 
     # 各属性が最大幅になるentry（この文字数に合わせて最大幅が決まる）
     max_width_entry = StubEntry.new('long_name.txt', '2000', '2', 2, 'root', 'wheel', 'drwxr-xr-x', 'Dec 31 23:59')
@@ -21,7 +21,7 @@ class LongFormatterTest < Minitest::Test
   def test_format
     output = @formatter.format(@list)
 
-    assert_match(/^total 3/, output)
+    assert_match(/^total 2/, output)
     assert_match(/-rw-r--r--\s+1\s+usr\s+grp\s+100\s+Jan\s+1\s00:00\s+a.txt/, output)
     assert_match(/drwxr-xr-x\s+2\s+root\s+wheel\s+2000\s+Dec 31 23:59\s+long_name.txt/, output)
   end

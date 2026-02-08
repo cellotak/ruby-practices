@@ -24,7 +24,7 @@ class EntryList
   end
 
   def total_blocks
-    @entries.sum(&:blocks)
+    @entries.sum(&:blocks) / 2
   end
 
   def max_widths
