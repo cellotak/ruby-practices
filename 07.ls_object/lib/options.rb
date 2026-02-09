@@ -18,7 +18,7 @@ class Options
   end
 
   def sort(items)
-    sorted = items.sort_by { |item| item.downcase }
+    sorted = items.sort_by(&:downcase)
     reverse? ? sorted.reverse : sorted
   end
 

@@ -5,15 +5,20 @@ class EntryList
 
   DETAIL_KEYS = %i[mode_string nlink owner group filesize mtime_string name].freeze
 
-  def initialize(entries)
+  def initialize(entries, total_needed: true)
     @entries = entries
+    @total_needed = total_needed
   end
 
-  def self.generate_from_files(file_paths)
-    entries = file_paths.map do |path|
+  def total_needed?
+    @total_needed
+  end
+
+  def self.generate_from_files(files)
+    entries = files.map do |path|
       Entry.new(File.dirname(path), File.basename(path))
     end
-    new(entries)
+    new(entries, total_needed: false)
   end
 
   def self.generate_from_directory(dir_path, options)
@@ -37,6 +42,6 @@ class EntryList
   private
 
   def display_width(str)
-    str.to_s.chars.sum { |char| char.bytesize == 1 ? 1 : 2 }
+    str.to_s.chars.sum { |char| char.ascii_only? ? 1 : 2 }
   end
 end

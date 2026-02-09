@@ -82,7 +82,15 @@ class LsCommandTest < Minitest::Test
 
     assert_match(/file_a\.txt/, output)
     assert_match(/bigfile/, output)
+
+    refute_match(/total/, output)
+  end
+
+  def test_long_format_directory
+    output = run_ls("-l #{SANDBOX_DIR}")
+
     assert_match(/total/, output)
+    assert_match(/file_a\.txt/, output)
   end
 
   def test_option_reverse_arguments

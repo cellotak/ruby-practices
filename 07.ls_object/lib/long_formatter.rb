@@ -13,7 +13,7 @@ class LongFormatter
 
   def format(entry_list)
     lines = []
-    lines << "total #{entry_list.total_blocks}"
+    lines << "total #{entry_list.total_blocks}" if entry_list.total_needed?
 
     widths = entry_list.max_widths
 
