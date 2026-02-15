@@ -12,19 +12,16 @@ class GridFormatter
     return '' if entries.empty?
 
     row_count = ((entries.size - 1) / @col_count) + 1
-    col_count = [entries.size, @col_count].min
-
     entries_table = entries.each_slice(row_count).to_a
-
     widths = entries_table.map { |col| col.map { |entry| display_width(entry.name) }.max + @space_width }
 
     # NOTE: OS標準のlsコマンドは横並びではなく縦並びで出力される(転置して出力される)
-    # 一方entries_tableの要素は行と列が出力したい形(縦並び)とは逆で保存されているためcol_indexとrow_indexを入れ替えてformatしている
-    Array.new(row_count) do |row_index|
-      row_entries = Array.new(col_count) { |col_index| entries_table.dig(col_index, row_index) }
+    last_col = entries_table.last
+    empty_cell_count = row_count - last_col.size
+    last_col.fill(nil, last_col.size, empty_cell_count)
+    rows = entries_table.transpose
 
-      build_line(row_entries, widths)
-    end.join("\n")
+    rows.map { |row_entries| build_line(row_entries, widths) }.join("\n")
   end
 
   private
