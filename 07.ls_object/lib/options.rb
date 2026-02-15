@@ -12,11 +12,6 @@ class Options
     @paths = parse(argv)
   end
 
-  def prepare_filenames(filenames)
-    sorted_filenames = sort(filenames)
-    select_visible_entries(sorted_filenames)
-  end
-
   def sort(items)
     sorted = items.sort_by(&:downcase)
     reverse? ? sorted.reverse : sorted

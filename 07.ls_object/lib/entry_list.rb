@@ -22,10 +22,15 @@ class EntryList
   end
 
   def self.generate_from_directory(dir_path, options)
-    filenames = options.prepare_filenames(Dir.entries(dir_path))
+    filenames = prepare_filenames(Dir.entries(dir_path), options)
 
     entries = filenames.map { Entry.new(dir_path, it) }
     new(entries)
+  end
+
+  def self.prepare_filenames(filenames, options)
+    filenames = options.select_visible_entries(filenames)
+    options.sort(filenames)
   end
 
   def total_blocks

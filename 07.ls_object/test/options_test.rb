@@ -52,22 +52,6 @@ class OptionsTest < Minitest::Test
     assert_equal %w[file1 .hidden file2], options.select_visible_entries(items)
   end
 
-  def test_prepare_filenames_default
-    argv = []
-    options = Options.new(argv)
-    items = %w[b .hidden a]
-
-    assert_equal %w[a b], options.prepare_filenames(items)
-  end
-
-  def test_prepare_filenames_all_reverse
-    argv = ['-a', '-r']
-    options = Options.new(argv)
-    items = %w[b .hidden a]
-
-    assert_equal %w[b a .hidden], options.prepare_filenames(items)
-  end
-
   def test_paths
     argv = ['-l', '/tmp', 'lib']
     options = Options.new(argv)
