@@ -24,7 +24,7 @@ class EntryList
   def self.generate_from_directory(dir_path, options)
     filenames = options.prepare_filenames(Dir.entries(dir_path))
 
-    entries = filenames.map { |name| Entry.new(dir_path, name) }
+    entries = filenames.map { Entry.new(dir_path, it) }
     new(entries)
   end
 
