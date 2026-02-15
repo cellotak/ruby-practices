@@ -12,14 +12,10 @@ class LongFormatter
   }.freeze
 
   def format(entry_list)
-    lines = []
-    lines << "total #{entry_list.total_blocks}" if entry_list.total_needed?
-
     widths = entry_list.max_widths
 
-    entry_list.entries.each do |entry|
-      lines << build_line(entry, widths)
-    end
+    lines = entry_list.entries.map { |entry| build_line(entry, widths) }
+    lines.unshift("total #{entry_list.total_blocks}") if entry_list.total_needed?
 
     lines.join("\n")
   end
