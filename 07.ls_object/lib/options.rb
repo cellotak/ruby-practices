@@ -2,7 +2,7 @@
 
 require 'optparse'
 require_relative 'long_formatter'
-require_relative 'default_formatter'
+require_relative 'grid_formatter'
 
 class Options
   attr_reader :paths
@@ -27,7 +27,7 @@ class Options
   end
 
   def formatter
-    long_format? ? LongFormatter.new : DefaultFormatter.new
+    long_format? ? LongFormatter.new : GridFormatter.new
   end
 
   private

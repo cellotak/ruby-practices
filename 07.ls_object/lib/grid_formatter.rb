@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DefaultFormatter
+class GridFormatter
   # OS標準のlsコマンドでは画面幅によって列数が変わるが、本lsコマンドでは列数を固定にしている
   MAX_COL_COUNT = 3
   SPACE_WIDTH = 2

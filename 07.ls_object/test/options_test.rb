@@ -3,14 +3,14 @@
 require 'minitest/autorun'
 require_relative '../lib/options'
 require_relative '../lib/long_formatter'
-require_relative '../lib/default_formatter'
+require_relative '../lib/grid_formatter'
 
 class OptionsTest < Minitest::Test
   def test_formatter_default
     argv = []
     options = Options.new(argv)
 
-    assert_instance_of DefaultFormatter, options.formatter
+    assert_instance_of GridFormatter, options.formatter
   end
 
   def test_formatter_long
