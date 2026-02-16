@@ -33,8 +33,9 @@ class GridFormatter
                .filter_map do |entry, width|
                  next unless entry
 
+                 # マルチバイト文字対応のため表示幅(width)に合わせてパディングを計算している
                  padding = width - display_width(entry.name)
-                 "#{entry.name}#{' ' * padding}"
+                 entry.name.ljust(entry.name.length + padding)
                end
                .join
                .rstrip
