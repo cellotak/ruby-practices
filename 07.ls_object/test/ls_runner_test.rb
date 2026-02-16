@@ -2,9 +2,9 @@
 
 require 'minitest/autorun'
 require 'fileutils'
-require 'open3'
+require_relative '../lib/ls_runner'
 
-class LsCommandTest < Minitest::Test
+class LsRunnerTest < Minitest::Test
   SANDBOX_DIR = 'test/sandbox'
 
   def setup
@@ -23,12 +23,19 @@ class LsCommandTest < Minitest::Test
     FileUtils.rm_rf(SANDBOX_DIR)
   end
 
-  def run_ls(args = '')
-    `ruby bin/ls.rb #{args}`
+  def run_ls(args_string = '')
+    argv = args_string.split
+    out, _err = capture_io do
+      LsRunner.new(argv).run
+    end
+    out
   end
 
-  def run_ls_stderr(args = '')
-    _out, err, _status = Open3.capture3("ruby bin/ls.rb #{args}")
+  def run_ls_stderr(args_string = '')
+    argv = args_string.split
+    _out, err = capture_io do
+      LsRunner.new(argv).run
+    end
     err
   end
 
