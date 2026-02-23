@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class GridFormatter
+class GridFormat
   # OS標準のlsコマンドでは画面幅によって列数が変わるが、本lsコマンドでは現状列数はデフォルト引数の値に固定している。
   def initialize(col_count: 3, space_width: 2)
     @col_count = col_count
     @space_width = space_width
   end
 
-  def format(entry_list)
+  def output(entry_list)
     entries = entry_list.entries
     return '' if entries.empty?
 

@@ -3,7 +3,7 @@
 require_relative 'options'
 require_relative 'entry_list'
 
-class LsRunner
+class Ls
   def initialize(argv)
     @options = Options.new(argv)
   end
@@ -12,13 +12,13 @@ class LsRunner
     paths = @options.paths.empty? ? ['.'] : @options.paths
     files, dirs = separate_paths(paths)
 
-    formatter = @options.formatter
+    format = @options.format
 
-    output_files(files, formatter)
+    output_files(files, format)
     output_blank_line_as_separator(files, dirs)
 
     should_print_header = paths.size > 1
-    output_directories(dirs, formatter, should_print_header)
+    output_directories(dirs, format, should_print_header)
   end
 
   private
@@ -42,11 +42,11 @@ class LsRunner
     [files, dirs]
   end
 
-  def output_files(files, formatter)
+  def output_files(files, format)
     return if files.empty?
 
     list = EntryList.generate_from_files(files)
-    output = formatter.format(list)
+    output = format.output(list)
     puts output unless output.empty?
   end
 
@@ -54,12 +54,12 @@ class LsRunner
     puts if !files.empty? && !dirs.empty?
   end
 
-  def output_directories(dirs, formatter, print_header)
+  def output_directories(dirs, format, print_header)
     dirs.each_with_index do |dir_path, index|
       puts "#{dir_path}:" if print_header
 
       list = EntryList.generate_from_directory(dir_path, @options)
-      output = formatter.format(list)
+      output = format.output(list)
       puts output unless output.empty?
 
       puts if index < dirs.size - 1

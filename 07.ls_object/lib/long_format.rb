@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LongFormatter
+class LongFormat
   COLUMN_ORDER_AND_ALIGNMENTS = {
     mode_string: :left,
     nlink: :right,
@@ -11,7 +11,7 @@ class LongFormatter
     name: :left
   }.freeze
 
-  def format(entry_list)
+  def output(entry_list)
     widths = entry_list.max_widths
 
     lines = entry_list.entries.map { |entry| build_line(entry, widths) }

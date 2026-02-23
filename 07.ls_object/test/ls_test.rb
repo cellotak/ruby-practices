@@ -2,9 +2,9 @@
 
 require 'minitest/autorun'
 require 'fileutils'
-require_relative '../lib/ls_runner'
+require_relative '../lib/ls'
 
-class LsRunnerTest < Minitest::Test
+class LsTest < Minitest::Test
   SANDBOX_DIR = 'test/sandbox'
 
   def setup
@@ -26,7 +26,7 @@ class LsRunnerTest < Minitest::Test
   def run_ls(args_string = '')
     argv = args_string.split
     out, _err = capture_io do
-      LsRunner.new(argv).run
+      Ls.new(argv).run
     end
     out
   end
@@ -34,7 +34,7 @@ class LsRunnerTest < Minitest::Test
   def run_ls_stderr(args_string = '')
     argv = args_string.split
     _out, err = capture_io do
-      LsRunner.new(argv).run
+      Ls.new(argv).run
     end
     err
   end

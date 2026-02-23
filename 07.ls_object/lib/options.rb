@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative 'long_formatter'
-require_relative 'grid_formatter'
+require_relative 'long_format'
+require_relative 'grid_format'
 
 class Options
   attr_reader :paths
@@ -21,8 +21,8 @@ class Options
     all? ? items : items.reject { |item| item.start_with?('.') }
   end
 
-  def formatter
-    long_format? ? LongFormatter.new : GridFormatter.new
+  def format
+    long_format? ? LongFormat.new : GridFormat.new
   end
 
   private

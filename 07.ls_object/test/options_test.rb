@@ -2,22 +2,22 @@
 
 require 'minitest/autorun'
 require_relative '../lib/options'
-require_relative '../lib/long_formatter'
-require_relative '../lib/grid_formatter'
+require_relative '../lib/long_format'
+require_relative '../lib/grid_format'
 
 class OptionsTest < Minitest::Test
-  def test_formatter_default
+  def test_format_default
     argv = []
     options = Options.new(argv)
 
-    assert_instance_of GridFormatter, options.formatter
+    assert_instance_of GridFormat, options.format
   end
 
-  def test_formatter_long
+  def test_format_long
     argv = ['-l']
     options = Options.new(argv)
 
-    assert_instance_of LongFormatter, options.formatter
+    assert_instance_of LongFormat, options.format
   end
 
   def test_sort_default

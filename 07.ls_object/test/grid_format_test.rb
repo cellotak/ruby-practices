@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require_relative '../lib/grid_formatter'
+require_relative '../lib/grid_format'
 require_relative '../lib/entry_list'
 
-class GridFormatterTest < Minitest::Test
+class GridFormatTest < Minitest::Test
   StubEntry = Struct.new(:name, :mode_string, :nlink, :owner, :group, :filesize, :mtime_string)
 
   def setup
     entries = ('a'..'e').map { |name| StubEntry.new("#{name}.txt") }
     @list = EntryList.new(entries)
 
-    @formatter = GridFormatter.new
+    @format = GridFormat.new
   end
 
-  def test_format
-    output = @formatter.format(@list)
+  def test_output
+    output = @format.output(@list)
 
     rows = output.split("\n")
 
